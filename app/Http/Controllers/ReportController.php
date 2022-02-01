@@ -6,6 +6,7 @@ use App\Models\Kata;
 use App\Models\PermanentKata;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
@@ -59,7 +60,7 @@ class ReportController extends Controller
 
                    $allkatas = Kata::wherehas('user', function ($q) use ($date, $request) {
                        $q->where('phone', $request->mobile);
-                   })->where('current_date', $date)->get();
+                   })->where('current_date', $date)->where('admin_id', Auth::id())->whereIn('type',[0,1])->get();
                    //dd($allkatas);
                    //$data = Kata::where('current_date', $date)->where(mobile)->get();
 
@@ -74,7 +75,7 @@ class ReportController extends Controller
                    //dd($endOfWeek);
                    $allkatas = Kata::wherehas('user', function ($q) use ($startOfWeek, $endOfWeek, $request) {
                        $q->where('phone', $request->mobile);
-                   })->whereBetween('current_date', [$startOfWeek, $endOfWeek])->get();
+                   })->where('admin_id', Auth::id())->whereIn('type',[0,1])->whereBetween('current_date', [$startOfWeek, $endOfWeek])->get();
 
                    //dd($allkatas);
 
@@ -86,7 +87,7 @@ class ReportController extends Controller
                    //dd($endOfWeek);
                    $allkatas = Kata::wherehas('user', function ($q) use ($startOfMonth, $endOfMonth, $request) {
                        $q->where('phone', $request->mobile);
-                   })->whereBetween('current_date', [$startOfMonth, $endOfMonth])->get();
+                   })->where('admin_id', Auth::id())->whereIn('type',[0,1])->whereBetween('current_date', [$startOfMonth, $endOfMonth])->get();
                }
 
            } else if ($request->report_name == 1) {
@@ -94,7 +95,7 @@ class ReportController extends Controller
                $to_date = $request->to_date;
                $allkatas = Kata::wherehas('user', function ($q) use ($from_date, $to_date, $request) {
                    $q->where('phone', $request->mobile);
-               })->whereBetween('current_date', [$from_date, $to_date])->get();
+               })->where('admin_id', Auth::id())->whereIn('type',[0,1])->whereBetween('current_date', [$from_date, $to_date])->get();
 
            }
 

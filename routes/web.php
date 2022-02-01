@@ -31,6 +31,14 @@ Route::get('logout', [UserController::class, 'logout'])->name('signout');
 
 
 Route::group(['middleware' => ['auth']], function () {
+
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::post('add-user', [UserController::class, 'CreateUser']);
+    Route::post('update-user', [UserController::class, 'UpdateUser']);
+    Route::get('show-user/{id}', [UserController::class, 'ShowUser']);
+    Route::get('edit-user/{id}', [UserController::class, 'EditUser']);
+    Route::post('reset-user-password', [UserController::class, 'ResetUserPaassword']);
+
     Route::get('home', [HomeController::class, 'index'])->name('home');
     Route::get('edit-profile', [UserController::class, 'editProfile'])->name('edit-profile'); //admin profile edit
     Route::post('profile-update', [UserController::class, 'profileUpdate'])->name('profile-update'); //admin profile Update

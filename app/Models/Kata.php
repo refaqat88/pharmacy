@@ -22,7 +22,8 @@ class Kata extends Model
         'user_id',
         'type',
         'page_no',
-        'image'
+        'image',
+        'admin_id'
 
 
     ];

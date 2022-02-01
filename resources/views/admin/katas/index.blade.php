@@ -133,6 +133,11 @@
                     <div class="modal-body row">
                         <div class="col-sm-12" id="form_add">
                             <div class="row">
+                                <div class="form-group mobile col-sm-4">
+                                    <label>Mobile</label>
+                                    <input type="text" class="form-control mobile-number" placeholder="" name="mobile" id="mobile"/>
+
+                                </div>
 
                                 <div class="form-group name col-sm-4">
                                     <label>Name</label>
@@ -140,11 +145,6 @@
 
                                 </div>
 
-                                <div class="form-group mobile col-sm-4">
-                                    <label>Mobile</label>
-                                    <input type="text" class="form-control mobile-number" placeholder="" name="mobile" id="mobile"/>
-
-                                </div>
                                 <div class="form-group page_no col-sm-4 select-wizard">
                                     <label>Page No</label>
                                     <input class="form-control" name="page_no" id="page_no" type="number" min="1" max="1000000"/>

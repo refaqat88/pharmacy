@@ -51,6 +51,12 @@
                     <p>Dashboard</p>
                 </a>
             </li>
+            <li class="{{ Request::routeIs('users.index') ? 'active' : '' }}" >
+                <a href="{{route('users.index')}}">
+                    <i class="fa fa-users"></i>
+                    <p>Users</p>
+                </a>
+            </li>
 
 
 

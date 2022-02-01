@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kata;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,8 +20,8 @@ class KataController extends Controller
     {
         //dd('sadsadsa');
         $allusers = User::wherehas('kata', function ($q) {
-            $q->where('type',0);
-            $q->orWhere('type',1);
+            $q->where('admin_id', Auth::id());
+            $q->whereIn('type',[0,1]);
             $q->orderBy('id','Desc');
             $q->take('1');
         })->get();
@@ -77,6 +78,7 @@ class KataController extends Controller
      */
     public function store(Request $request)
     {
+
         $input = $request->all();
         //dd($request->file('image'));
         $validator = Validator::make($request->all(), [
@@ -124,6 +126,7 @@ class KataController extends Controller
                     $input['receipt_no'] = $receipt;
                     $input['current_date'] = date('Y-m-d');
                     $input['user_id'] = $useradd->id;
+                    $input['admin_id'] = Auth::id();
                     $input['type'] = $request->khata_type;
                     if ($request->hasFile('image')) {
                         $khata_image = $request->file('image');
@@ -140,6 +143,7 @@ class KataController extends Controller
                 $input['receipt_no'] = $receipt;
                 $input['current_date'] = date('Y-m-d');
                 $input['user_id'] = $user_id;
+                $input['admin_id'] = Auth::id();
                 $input['type'] = $request->khata_type;
                 if ($request->hasFile('image')) {
                     $khata_image = $request->file('image');

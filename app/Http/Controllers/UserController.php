@@ -2,17 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 use Illuminate\Support\Facades\Hash;
 use File;
+use Redirect,Response;
+use DB;
+use Illuminate\Support\Arr;
 
 class UserController extends Controller
 {
 
 
+    public function index(){
+        $users = User::whereHas('roles', function ($q) {
+            $q->where('name' , 'admin');
+        })->orderBy('id','desc')->get();
+
+        //dd($roles);
+        return view('admin.users.index', compact('users'));
+    }
 
     public function loginView(){
         if (auth()->check()) {
@@ -118,6 +130,125 @@ class UserController extends Controller
             return redirect()->back()->withSuccess('Successfully Updated!');
 
         }
+
+    }
+
+
+    public function ShowUser($id)
+    {
+
+        $where = array('id' => $id);
+        $user = User::where($where)->first();
+        $user->type = $user->roles->pluck('name','name')->first();
+        //dd($user->type);
+        return Response::json($user);
+
+    }
+
+    public function EditUser($id)
+    {
+
+        $user = User::findOrFail($id);
+        $user->user_type = $user->roles->pluck('id')->first();
+
+        return Response::json($user);
+    }
+
+    public function CreateUser(Request $request)
+    {
+
+        //dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'username' => 'required|unique:users,username',
+            'password' => 'required',
+            'password_confirmation' => 'same:password',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()]);
+        }else{
+
+            $input = $request->all();
+            $input['password'] = Hash::make($input['password']);
+            $input['status'] = ($request->get('status'))? 'Active' : 'Inactive';
+            $input['admin_id'] = '';
+            $user = User::create($input);
+            $user->assignRole('admin');
+            return response()->json(['message' => 'Successfully Added!']);
+        }
+
+
+
+    }
+
+    public function UpdateUser(Request $request)
+    {
+        //dd($request->all());
+        $id = $request->id;
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'username' => 'required',
+            'password_confirmation' => 'same:password',
+        ]);
+
+
+
+        if ($validator->fails()) {
+
+            return response()->json(['errors' => $validator->errors()]);
+
+        }else {
+
+
+            $input = $request->all();
+
+            if(!empty($input['password'])){
+                $input['password'] = Hash::make($input['password']);
+            }else{
+                $input = Arr::except($input,array('password'));
+            }
+
+            if(!empty($input['status'])){
+                $input['status'] = 'active';
+            }else{
+                $input['status'] = 'Inactive';
+            }
+
+            $user = User::find($id);
+
+            $user->update($input);
+
+            DB::table('model_has_roles')->where('model_id',$id)->delete();
+
+            $user->assignRole('admin');
+
+            return response()->json(['message' => 'Successfully Updated!']);
+        }
+
+
+        //dd($form_data);
+
+
+
+        //return redirect()->back()->with('message', 'Successfully Updated!');
+
+    }
+
+    public function ResetUserPaassword(Request $request)
+    {
+        $user = User::where('id',$request->id)->first();
+        //dd($user->username);
+        $form_data = array();
+
+        $form_data = array(
+            'password'      => Hash::make($user->username)
+        );
+
+        //dd($form_data);
+        User::where('id',  $request->id)->update($form_data);
+        $request->flash();
+        return redirect()->back()->with('message', 'Successfully Updated!');
 
     }
 
