@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Kata extends Model
 {
     use HasFactory;
-
+    protected $table = 'katas';
     protected $fillable = [
 
         'address',
@@ -24,11 +24,34 @@ class Kata extends Model
         'page_no',
         'image',
         'admin_id'
-
-
     ];
 
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+
+
+    public function images()
+    {
+        $where = array('kata_id' => $this->id);
+        $images = Image::where($where)->get();
+        $imageList = [];
+
+        foreach ($images as $image){
+
+            if (file_exists( public_path('img/upload/khata/').$image->url) && $image->url!='') {
+
+                $imageList[] = asset('img/upload/khata/'.$image->url);
+            } else {
+                $imageList[] =  asset('img/upload/khata/no-image.png');
+            }
+
+
+        }
+        return $imageList;
+    }
+
+
+
 }

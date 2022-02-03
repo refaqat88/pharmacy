@@ -12,16 +12,19 @@ class HomeController extends Controller
 {
     public function index(){
 
-        $data['temporarykhata'] = Kata::where('admin_id', Auth::id())->where('type', 0)->where('amount_status','Bill')->sum('total_amount');
-
-        $data['temporary_revenue'] = Kata::where('admin_id', Auth::id())->where('type', 0)->where('amount_status','Bill')->sum('paid_amount');
+        $data['temporarykhata'] = Kata::where('admin_id', Auth::id())->where('type', 0)->whereIn('amount_status',['Bill','Paid'])->sum('total_amount');
+        //dd($data['temporarykhata']);
+        $data['temporary_revenue'] = Kata::where('admin_id', Auth::id())->where('type', 0)->whereIn('amount_status',['Bill','Paid'])->sum('paid_amount');
+        //dd($data['temporary_revenue']);
         $data['temporary'] = (int)$data['temporarykhata'] - (int)$data['temporary_revenue'];
 
-        $data['permanentkhata'] = Kata::where('admin_id', Auth::id())->where('type', 1)->where('amount_status','Bill')->sum('total_amount');
-        $data['permanent_revenue'] = Kata::where('admin_id', Auth::id())->where('type', 1)->where('amount_status','Bill')->sum('paid_amount');
+        $data['permanentkhata'] = Kata::where('admin_id', Auth::id())->where('type', 1)->whereIn('amount_status',['Bill','Paid'])->sum('total_amount');
+        $data['permanent_revenue'] = Kata::where('admin_id', Auth::id())->where('type', 1)->whereIn('amount_status',['Bill','Paid'])->sum('paid_amount');
         $data['permanent'] =  (int)$data['permanentkhata'] - (int)$data['permanent_revenue'];
-        $data['supplierKhata'] = Kata::where('admin_id', Auth::id())->where('type', 2)->where('amount_status','Bill')->sum('total_amount');
-        $data['revenue'] = Kata::where('admin_id', Auth::id())->where('type', 2)->where('amount_status','Bill')->sum('paid_amount');
+
+        $data['supplierKhata'] = Kata::where('admin_id', Auth::id())->whereIn('type', [2])->whereIn('amount_status',['Bill','Paid'])->sum('total_amount');
+        $data['revenue'] = Kata::where('admin_id', Auth::id())->where('type', 2)->whereIn('amount_status',['Bill','Paid'])->sum('paid_amount');
+        //dd($data['supplierKhata']);
         $data['expenses'] = (int)$data['supplierKhata'] - (int)$data['revenue'];
         return view('admin.home',compact('data'));
     }

@@ -128,16 +128,14 @@
                     <div class="modal-body row">
                         <div class="col-sm-12" id="form_add">
                             <div class="row">
-
-                                <div class="form-group name col-sm-4">
-                                    <label>Name</label>
-                                    <input type="text" class="form-control" placeholder="" name="name" id="name"/>
-
-                                </div>
-
                                 <div class="form-group mobile col-sm-4">
                                     <label>Mobile</label>
                                     <input type="text" class="form-control mobile-number" placeholder="" name="mobile" id="mobile"/>
+
+                                </div>
+                                <div class="form-group name col-sm-4">
+                                    <label>Name</label>
+                                    <input type="text" class="form-control" placeholder="" name="name" id="name"/>
 
                                 </div>
                                 <div class="form-group page_no col-sm-4 select-wizard">
@@ -145,22 +143,12 @@
                                     <input class="form-control" name="page_no" id="page_no" type="number" min="1" max="1000000"/>
 
                                 </div>
-                                <div class="form-group address col-sm-4 select-wizard">
+                                <div class="form-group address col-sm-12 select-wizard">
                                     <label>Address</label>
                                     <input class="form-control" name="address" id="address" type="text"/>
 
                                 </div>
-                                <div class="control-group image col-sm-4 select-wizard">
-                                    <label>Image</label>
-                                    <input class="form-control" name="image" id="image" type="file"/>
 
-                                </div>
-                                <div class="control-group image col-sm-4 select-wizard">
-                                    <label>Image</label>
-                                    <img id="kata_image" src="{{asset('img/upload/khata/no-image.png')}}" width="100px" height="auto">
-
-
-                                </div>
 
                                 <div class="form-group total_amount col-sm-4">
                                     <label>Total (Bill) Amount</label>
@@ -195,6 +183,16 @@
                                         <option value="Paid">Paid</option>
                                         <option value="Bill">Bill</option>
                                     </select>
+                                </div>
+
+                                <div class="control-group col-sm-4">
+                                    <label>Image</label>
+                                    <input class="form-control" name="photos[]" id="image" type="file" multiple/>
+
+                                </div>
+
+                                <div class="row image">
+
                                 </div>
 
 
@@ -250,15 +248,11 @@
                                 <P id="show-current-date"></P>
 
                             </div>
-                            <div class="form-group address col-sm-4 select-wizard">
+                            <div class="form-group address col-sm-8 select-wizard">
                                 <label>Address</label>
                                 <P id="show-address"></P>
                             </div>
-                            <div class="control-group image col-sm-4">
-                                <label>Image</label>
-                                <img id="show-image" src="{{asset('img/upload/khata/no-image.png')}}" width="100px" height="auto">
 
-                            </div>
                             <div class="form-group total_amount col-sm-4">
                                 <label>Total Amount</label>
                                 <P id="show-total-amount"></P>

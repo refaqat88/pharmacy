@@ -248,32 +248,47 @@
                     extend:    'copyHtml5',
                     text:      '<i class="fa fa-files-o"></i>',
                     className: 'btn btn-default btn-sm ',
-                    titleAttr: 'Copy'
+                    titleAttr: 'Copy',
+                    exportOptions: {
+                        columns: ':visible:not(:contains(Actions))'
+                    },
                 },
                 {
                     extend:    'excelHtml5',
                     text:      '<i class="fa fa-file-excel-o"></i>',
                     className: 'btn btn-default btn-sm ',
-                    titleAttr: 'Excel'
+                    titleAttr: 'Excel',
+                    exportOptions: {
+                        columns: ':visible:not(:contains(Actions))'
+                    },
                 },
                 {
                     extend:    'csvHtml5',
                     text:      '<i class="fa fa-file-text-o"></i>',
                     className: 'btn btn-default btn-sm ',
-                    titleAttr: 'CSV'
+                    titleAttr: 'CSV',
+                    exportOptions: {
+                        columns: ':visible:not(:contains(Actions))'
+                    },
                 },
                 {
                     extend:    'pdfHtml5',
                     text:      '<i class="fa fa-file-pdf-o"></i>',
                     className: 'btn btn-default btn-sm ',
-                    titleAttr: 'PDF'
+                    titleAttr: 'PDF',
+                    exportOptions: {
+                        columns: ':visible:not(:contains(Actions))'
+                    },
                 },
                 {
                     extend: 'print',
                     text: '<i class="fa fa-print"></i>',
                     className: 'btn btn-default btn-sm',
                     titleAttr: 'Print',
-                    autoPrint: true
+                    autoPrint: true,
+                    exportOptions: {
+                        columns: ':visible:not(:contains(Actions))'
+                    },
                 },
 
             ],

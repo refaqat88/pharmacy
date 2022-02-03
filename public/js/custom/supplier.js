@@ -200,8 +200,23 @@ $(document).ready(function () {
                 $("#total_amount").val(result.total_amount);
                 $("#remaining_amount").val(result.remaining_amount);
                 $("#amount_status").val(result.amount_status).trigger('change');
+                $("div.image").html('');
+                var html='';
+                if (result.images != '') {
+
+                    $.each(result.images, function (key, value) {
+                        console.log(value);
+                        if (value != '') {
+                            html += `<div class="form-group image col-sm-4">                                  
+                                    <img  class="kata_image" id="kata_image" src="${value}" width="100px" height="100Px">
+                                   </div>`;
+                        }
 
 
+                    });
+
+                    $('div.image').html(html);
+                }
             }
         })
 

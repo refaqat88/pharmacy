@@ -150,22 +150,13 @@
                                     <input class="form-control" name="page_no" id="page_no" type="number" min="1" max="1000000"/>
 
                                 </div>
-                                <div class="form-group address col-sm-4 select-wizard">
+                                <div class="form-group address col-sm-12 select-wizard">
                                     <label>Address</label>
                                     <input class="form-control" name="address" id="address" type="text"/>
 
                                 </div>
 
-                                <div class="control-group image col-sm-4">
-                                    <label>Image</label>
-                                    <input class="form-control" name="image" id="image" type="file"/>
 
-                                </div>
-                                <div class="control-group image col-sm-4">
-                                    <label>Image</label>
-                                    <img id="kata_image" src="{{asset('img/upload/khata/no-image.png')}}" width="100px" height="auto">
-
-                                </div>
 
                                 <div class="form-group total_amount col-sm-4">
                                     <label>Total (Bill) Amount</label>
@@ -208,6 +199,16 @@
                                         <option value="0">Temporary</option>
                                         <option value="1">Permanent</option>
                                     </select>
+                                </div>
+
+                                <div class="control-group col-sm-4">
+                                    <label>Image</label>
+                                    <input class="form-control" name="photos[]" id="image" type="file" multiple/>
+
+                                </div>
+
+                                <div class="row image">
+
                                 </div>
 
 
@@ -263,14 +264,11 @@
                                 <P id="show-current-date"></P>
 
                             </div>
-                            <div class="form-group address col-sm-4 select-wizard">
+                            <div class="form-group address col-sm-8 select-wizard">
                                 <label>Address</label>
                                 <P id="show-address"></P>
                             </div>
-                            <div class="form-group address col-sm-4 select-wizard">
-                                <label>Image</label>
-                                <img id="show-image" src="" width="100" height="auto">
-                            </div>
+
                             <div class="form-group total_amount col-sm-4">
                                 <label>Total Amount</label>
                                 <P id="show-total-amount"></P>

@@ -51,13 +51,14 @@
                     <p>Dashboard</p>
                 </a>
             </li>
+            @role('super admin')
             <li class="{{ Request::routeIs('users.index') ? 'active' : '' }}" >
                 <a href="{{route('users.index')}}">
                     <i class="fa fa-users"></i>
                     <p>Users</p>
                 </a>
             </li>
-
+            @endrole
 
 
             {{--<li class="{{ Request::routeIs('roles.index') || Request::routeIs('roles.create') ? 'active' : '' || Request::routeIs('roles.show') ? 'active' : '' }}">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Image;
 use App\Models\Kata;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -46,7 +47,7 @@ class KataController extends Controller
         $previous_kata['remaining_amount']=0;
         $previous_kata['image'] = 'no-image.png';
        if ($user){
-           $total_amount = Kata::where('user_id', $user->id)->orderBy('id', 'desc')->first();
+           $total_amount = Kata::where(['admin_id' => Auth::id(),'user_id' => $user->id])->whereIn('type',[0,1])->orderBy('id', 'desc')->first();
            //dd($total_amount->remaining_amount);
            if ($total_amount != ''){
                $previous_kata['remaining_amount'] = $total_amount->remaining_amount;
@@ -85,7 +86,6 @@ class KataController extends Controller
             'name' =>'required|regex:/^[a-zA-Z\s]+$/',
             'address' => 'required',
             'mobile' => 'required|numeric',
-            'page_no' => 'required|numeric',
             'remaining_amount' => 'required',
            /* 'paid_amount' => 'required',*/
             'paid_date' => 'required',
@@ -99,67 +99,86 @@ class KataController extends Controller
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
-        }else{
+        }else {
             $user = User::where('phone', $request->mobile)->first();
-            $receipt = Kata::select('receipt_no')->orderBy('receipt_no','Desc')->first();
+            $receipt = Kata::select('receipt_no')->orderBy('receipt_no', 'Desc')->first();
 
-            if ($receipt){
+            if ($receipt) {
                 $receipt = $receipt->receipt_no + 1;
-            }else{
+            } else {
                 $receipt = 1000;
             }
 
 
-
-
-            if(!$user){
+            if (!$user) {
                 $data = [
-                'name' => $request->name,
-                'phone' => $request->mobile,
-                'username' => $request->mobile,
-                'password' => hash::Make($request->mobile),
-                'status' => 'Active',
-                    ];
+                    'name' => $request->name,
+                    'phone' => $request->mobile,
+                    'username' => $request->mobile,
+                    'password' => hash::Make($request->mobile),
+                    'status' => 'Active',
+                ];
 
-                    $useradd = User::create($data);
+                $useradd = User::create($data);
 
-                    $input['receipt_no'] = $receipt;
-                    $input['current_date'] = date('Y-m-d');
-                    $input['user_id'] = $useradd->id;
-                    $input['admin_id'] = Auth::id();
-                    $input['type'] = $request->khata_type;
-                    if ($request->hasFile('image')) {
-                        $khata_image = $request->file('image');
-                        $new_khata_image = "user" . time() . '.' . $khata_image->getClientOriginalExtension();
-                        $khata_image->move(public_path('img/upload/khata'), $new_khata_image);
-                        $input['image'] = $new_khata_image;
+                $input['receipt_no'] = $receipt;
+                $input['current_date'] = date('Y-m-d');
+                $input['user_id'] = $useradd->id;
+                $input['admin_id'] = Auth::id();
+                $input['type'] = $request->khata_type;
+                $kata = Kata::create($input);
+
+                $files[] = '';
+                if($files=$request->file('photos')){
+                    foreach($files as $file){
+                        $name=time().'.'.$file->getClientOriginalName();
+                        $file->move(public_path('img/upload/khata/'),$name);
+                        $images[]=$name;
+                        Image::create([
+                            'kata_id' => $kata->id,
+                            'url' => $name,
+                        ]);
 
                     }
-                    $kata = Kata::create($input);
+                }
+
+
                 //$user_id = $useradd->id;
-            }else{
-                $user_id =  $user->id;
+            } else {
+                $user_id = $user->id;
                 $input = $request->all();
                 $input['receipt_no'] = $receipt;
                 $input['current_date'] = date('Y-m-d');
                 $input['user_id'] = $user_id;
                 $input['admin_id'] = Auth::id();
                 $input['type'] = $request->khata_type;
-                if ($request->hasFile('image')) {
-                    $khata_image = $request->file('image');
-                    $new_khata_image = "user" . time() . '.' . $khata_image->getClientOriginalExtension();
-                    $khata_image->move(public_path('img/upload/khata'), $new_khata_image);
-                    $input['image'] = $new_khata_image;
 
-                }
                 $kata = Kata::create($input);
+                $files = [];
+
+
+                if($files=$request->file('photos')){
+                    foreach($files as $file){
+                        $name=time().'.'.$file->getClientOriginalName();
+                        $file->move(public_path('img/upload/khata/'),$name);
+                        $images[]=$name;
+                        Image::create([
+                            'kata_id' => $kata->id,
+                            'url' => $name,
+                        ]);
+
+                    }
+                }
+
+
             }
 
 
+        }
 
             return response()->json(['message' => 'Successfully Added!']);
         }
-    }
+
 
     /**
      * Display the specified resource.
@@ -188,7 +207,7 @@ class KataController extends Controller
             $q->take('1');
         })->where('id',$request->id)->first();
 
-        //$user = User::findOrFail($request->id);
+      //dd($user->kata->images);
         $user->current_date = $user->kata? $user->kata->current_date:'';
         $user->receipt_no = $user->kata? $user->kata->receipt_no:'';
         $user->address = $user->kata? $user->kata->address:'';
@@ -197,7 +216,7 @@ class KataController extends Controller
         $user->remaining_amount = $user->kata? $user->kata->remaining_amount:'';
         $user->paid_date = $user->kata? $user->kata->paid_date:'';
         $user->amount_status = $user->kata? $user->kata->amount_status:'';
-        $user->image = $user->kata->image? $user->kata->image:'no-image.png';
+        //$user['images'] = $user->kata? $user->kata->images:'no-image.png';
         $type =$user->kata? $user->kata->type:'';
         $user->type = $type==0?'Temporary':'Permanent';
         return response($user);
@@ -212,6 +231,7 @@ class KataController extends Controller
     public function edit(Request $request)
     {
         $user = User::wherehas('kata', function ($q) use($request){
+            $q->where('admin_id', Auth::id());
             $q->orderBy('id','Desc');
             $q->take('1');
         })->where('id',$request->id)->first();
@@ -225,7 +245,9 @@ class KataController extends Controller
         $user->paid_date = $user->kata? $user->kata->paid_date:'';
         $user->amount_status = $user->kata? $user->kata->amount_status:'';
         $user->type = $user->kata? $user->kata->type:'';
-        $user->image = $user->kata->image? $user->kata->image:'no-image.png';
+
+        $user['images'] = $user->kata? $user->kata->images():'';
+        //dd($user['images']);
         $user->page = $user->kata? $user->kata->page_no:'';
 
         return response($user);
@@ -245,7 +267,6 @@ class KataController extends Controller
             'name' => 'required|regex:/^[a-zA-Z\s]+$/',
             'address' => 'required',
             'mobile' => 'required|numeric',
-            'page_no' => 'required|numeric',
             'remaining_amount' => 'required',
             /*'paid_amount' => 'required',*/
             'paid_date' => 'required',
@@ -277,15 +298,23 @@ class KataController extends Controller
                'paid_amount' => $request->paid_amount,
                'paid_date' => $request->paid_date,
                'amount_status' => $request->amount_status,
+               'admin_id' => Auth::id(),
                'type' =>  $request->khata_type,
            ];
 
-            if ($request->hasFile('image')) {
-                $khata_image = $request->file('image');
-                $new_khata_image = "user" . time() . '.' . $khata_image->getClientOriginalExtension();
-                $khata_image->move(public_path('img/upload/khata'), $new_khata_image);
-                $data['image'] = $new_khata_image;
 
+            if($files=$request->file('photos')){
+               Image::where('kata_id', $request->id)->delete();
+                foreach($files as $file){
+                    $name=time().'.'.$file->getClientOriginalName();
+                    $file->move(public_path('img/upload/khata/'),$name);
+                    $images[]=$name;
+                    Image::create([
+                        'kata_id' => $request->id,
+                        'url' => $name,
+                    ]);
+
+                }
             }
 
            $kata = Kata::where('id',$request->id)->update($data);

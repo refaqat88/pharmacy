@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Image;
 use App\Models\Kata;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,7 +21,8 @@ class SupplierController extends Controller
     {
         //dd('sadsadsa');
         $allusers = User::wherehas('kata', function ($q) {
-            $q->where('type',2);
+            $q->where('admin_id', Auth::id());
+            $q->whereIn('type',[2]);
             $q->orderBy('id','Desc');
             $q->take('1');
         })->get();
@@ -44,7 +47,7 @@ class SupplierController extends Controller
         $previous_kata['remaining_amount']=0;
         $previous_kata['image'] = 'no-image.png';
        if ($user){
-           $total_amount = Kata::where('user_id', $user->id)->orderBy('id', 'desc')->first();
+           $total_amount = Kata::where('admin_id', Auth::id())->where('user_id', $user->id)->orderBy('id', 'desc')->first();
            //dd($total_amount->remaining_amount);
            if ($total_amount != ''){
                $previous_kata['remaining_amount'] = $total_amount->remaining_amount;
@@ -78,7 +81,6 @@ class SupplierController extends Controller
             'name' => 'required|regex:/^[a-zA-Z\s]+$/',
             'address' => 'required',
             'mobile' => 'required|numeric',
-            'page_no' => 'required|numeric',
             'remaining_amount' => 'required',
             /*'paid_amount' => 'required',*/
             'paid_date' => 'required',
@@ -113,16 +115,24 @@ class SupplierController extends Controller
                     $input['receipt_no'] = $receipt;
                     $input['current_date'] = date('Y-m-d');
                     $input['user_id'] = $useradd->id;
+                    $input['admin_id'] = Auth::id();
                     $input['type'] = 2;
-                if ($request->hasFile('image')) {
-                    $khata_image = $request->file('image');
-                    $new_khata_image = "user" . time() . '.' . $khata_image->getClientOriginalExtension();
-                    $khata_image->move(public_path('img/upload/khata'), $new_khata_image);
-                    $input['image'] = $new_khata_image;
 
-                }
 
                     $kata = Kata::create($input);
+                    $files[] = '';
+                    if($files=$request->file('photos')){
+                        foreach($files as $file){
+                            $name=time().'.'.$file->getClientOriginalName();
+                            $file->move(public_path('img/upload/khata/'),$name);
+                            $images[]=$name;
+                            Image::create([
+                                'kata_id' => $kata->id,
+                                'url' => $name,
+                            ]);
+
+                        }
+                    }
                 //$user_id = $useradd->id;
             }else{
                 $user_id =  $user->id;
@@ -130,15 +140,23 @@ class SupplierController extends Controller
                 $input['receipt_no'] = $receipt;
                 $input['current_date'] = date('Y-m-d');
                 $input['user_id'] = $user_id;
+                $input['admin_id'] = Auth::id();
                 $input['type'] = 2;
-                if ($request->hasFile('image')) {
-                    $khata_image = $request->file('image');
-                    $new_khata_image = "user" . time() . '.' . $khata_image->getClientOriginalExtension();
-                    $khata_image->move(public_path('img/upload/khata'), $new_khata_image);
-                    $input['image'] = $new_khata_image;
 
-                }
                 $kata = Kata::create($input);
+                $files[] = '';
+                if($files=$request->file('photos')){
+                    foreach($files as $file){
+                        $name=time().'.'.$file->getClientOriginalName();
+                        $file->move(public_path('img/upload/khata/'),$name);
+                        $images[]=$name;
+                        Image::create([
+                            'kata_id' => $kata->id,
+                            'url' => $name,
+                        ]);
+
+                    }
+                }
             }
 
 
@@ -156,6 +174,8 @@ class SupplierController extends Controller
     {
         //dd($request->all());
         $user = User::wherehas('kata', function ($q) use($request){
+            $q->where('admin_id', Auth::id());
+            $q->whereIn('type',[2]);
             $q->orderBy('id','Desc');
             $q->take('1');
         })->where('id',$request->id)->first();
@@ -167,7 +187,8 @@ class SupplierController extends Controller
     {
         //dd($request->all());
         $user = User::wherehas('kata', function ($q) use($request){
-            $q->where('type','=',2);
+            $q->where('admin_id', Auth::id());
+            $q->whereIn('type',[2]);
             $q->orderBy('id','Desc');
             $q->take('1');
         })->where('id',$request->id)->first();
@@ -182,7 +203,7 @@ class SupplierController extends Controller
         $user->remaining_amount = $user->kata? $user->kata->remaining_amount:'';
         $user->paid_date = $user->kata? $user->kata->paid_date:'';
         $user->amount_status = $user->kata? $user->kata->amount_status:'';
-        $user->image = $user->kata->image? $user->kata->image:'no-image.png';
+        //$user->image = $user->kata->image? $user->kata->image:'no-image.png';
         //$type =$user->kata? $user->kata->type:'';
         //$user->type = $type==0?'Temporary':'';
         return response($user);
@@ -197,6 +218,8 @@ class SupplierController extends Controller
     public function edit(Request $request)
     {
         $user = User::wherehas('kata', function ($q) use($request){
+            $q->where('admin_id', Auth::id());
+            $q->whereIn('type',[2]);
             $q->orderBy('id','Desc');
             $q->take('1');
         })->where('id',$request->id)->first();
@@ -209,7 +232,7 @@ class SupplierController extends Controller
         $user->remaining_amount = $user->kata? $user->kata->remaining_amount:'';
         $user->paid_date = $user->kata? $user->kata->paid_date:'';
         $user->amount_status = $user->kata? $user->kata->amount_status:'';
-        $user->image = $user->kata->image? $user->kata->image:'no-image.png';
+        $user['images'] = $user->kata? $user->kata->images():'';
         $user->page = $user->kata? $user->kata->page_no:'';
         $type = $user->kata? $user->kata->type:'';
         $user->type = $type==3? 'Supplier':'';
@@ -231,8 +254,8 @@ class SupplierController extends Controller
             'name' => 'required|regex:/^[a-zA-Z\s]+$/',
             'address' => 'required',
             'mobile' => 'required|numeric',
-            'page_no' => 'required|numeric',
             'remaining_amount' => 'required',
+
           /*  'paid_amount' => 'required',*/
             'paid_date' => 'required',
             'amount_status' => 'required',
@@ -262,16 +285,26 @@ class SupplierController extends Controller
                'paid_amount' => $request->paid_amount,
                'paid_date' => $request->paid_date,
                'amount_status' => $request->amount_status,
+               'admin_id' => Auth::id(),
                'type' =>  2,
            ];
 
-            if ($request->hasFile('image')) {
-                $khata_image = $request->file('image');
-                $new_khata_image = "user" . time() . '.' . $khata_image->getClientOriginalExtension();
-                $khata_image->move(public_path('img/upload/khata'), $new_khata_image);
-                $data['image'] = $new_khata_image;
 
+
+            if($files=$request->file('photos')){
+                Image::where('kata_id', $request->id)->delete();
+                foreach($files as $file){
+                    $name=time().'.'.$file->getClientOriginalName();
+                    $file->move(public_path('img/upload/khata/'),$name);
+                    $images[]=$name;
+                    Image::create([
+                        'kata_id' => $request->id,
+                        'url' => $name,
+                    ]);
+
+                }
             }
+
 
            $kata = Kata::where('id',$request->id)->update($data);
 

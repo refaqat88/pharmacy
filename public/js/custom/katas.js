@@ -195,7 +195,6 @@ $(document).ready(function () {
             dataType: "json",
             data: {id: id},
             success: function (result) {
-                console.log(result);
 
                 $("#edit-kata-id").val(result.kata_id);
                 $("#edit-user_id").val(result.id);
@@ -210,10 +209,25 @@ $(document).ready(function () {
                 $("#remaining_amount").val(result.remaining_amount);
                 $("#amount_status").val(result.amount_status).trigger('change');
                 $("#khata_type").val(result.type).trigger('change');
-                if (result.image !='' || result.image != undefined){
-                    $("#kata_image").attr('src', asset_url + '/img/upload/khata/'+ result.image);
-                }
+                $("div.image").html('');
+                var html='';
+                if (result.images != '') {
 
+                    $.each(result.images, function (key, value) {
+                        console.log(value);
+                        if(value!='') {
+                            html += `<div class="form-group image col-sm-4">                                  
+                                    <img  class="kata_image" id="kata_image" src="${value}" width="100px" height="100Px">
+                                   </div>`;
+                        }
+
+
+                    });
+
+                    $('div.image').html(html);
+
+
+                }
             }
         })
 
