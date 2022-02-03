@@ -161,11 +161,11 @@
 
 @section('front_script')
     <script src="{{asset('js/core/html2pdf.bundle.min.js')}}"></script>
-    <script src="{{asset('js/demo.js')}}"></script>
+     <script src="{{asset('js/demo.js')}}"></script>
     <script src="{{asset('js/plugins/bootstrap-datetimepicker.js')}}"></script>
 
     <script src="{{asset('js/custom/report.js')}}"></script>
-    {{--<script src="{{asset('js/custom/katas.js')}}"></script>--}}
+
 
 
 @endsection

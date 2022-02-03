@@ -28,7 +28,7 @@
                 <div class="container px-0">
                     <div class="row mt-4">
                         <div class="col-12">
-                            <a href="#" class="btn btn-info btn-bold px-4 export float-right mt-3 mt-lg-0">PDF</a>
+                           <a href="#" class="btn btn-info btn-bold px-4 export float-right mt-3 mt-lg-0">PDF</a>
                         </div>
                         <div class="col-12 col-lg-12" id="Invoice">
                             <div class="row">
