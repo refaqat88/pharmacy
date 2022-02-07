@@ -3,13 +3,19 @@
     <div class="logo">
         <a href="{{route('home')}}" class="simple-text logo-mini">
             <div class="logo-image-small">
-                <img src="{{asset('img/upload/logo/'.Auth::user()->user_image)}}">
+                <img src="{{Auth::user()->photo()}}">
             </div>
             <!-- <p>CT</p> -->
         </a>
+
+
         <a href="{{route('home')}}" class="simple-text logo-normal">
-            <img src="{{asset('img/upload/logo/'.Auth::user()->user_image)}}" height="auto" width="70px">
+            <img src="{{Auth::user()->photo()}}" height="auto" width="70px">
+
         </a>
+
+
+
     </div>
     <div class="sidebar-wrapper">
         <div class="user">

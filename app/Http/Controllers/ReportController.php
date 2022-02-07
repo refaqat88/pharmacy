@@ -49,6 +49,7 @@ class ReportController extends Controller
            return response()->json(['errors' => $validator->errors()]);
 
        } else {
+
            $allkatas[] = '';
 
            ///dd($khata->);
@@ -57,10 +58,10 @@ class ReportController extends Controller
                if ($request->report_type == 'Daily') {
                    //dd($request->all());
                    $date = date('Y-m-d');
+                       $allkatas = Kata::wherehas('user', function ($q) use ($date, $request) {
+                           $q->where('phone', $request->mobile);
+                       })->where('current_date', $date)->where('admin_id', Auth::id())->whereIn('type',[0,1,2])->get();
 
-                   $allkatas = Kata::wherehas('user', function ($q) use ($date, $request) {
-                       $q->where('phone', $request->mobile);
-                   })->where('current_date', $date)->where('admin_id', Auth::id())->whereIn('type',[0,1])->get();
                    //dd($allkatas);
                    //$data = Kata::where('current_date', $date)->where(mobile)->get();
 
@@ -73,9 +74,10 @@ class ReportController extends Controller
 
                    $endOfWeek = $now->endOfWeek()->format('Y-m-d');
                    //dd($endOfWeek);
+
                    $allkatas = Kata::wherehas('user', function ($q) use ($startOfWeek, $endOfWeek, $request) {
                        $q->where('phone', $request->mobile);
-                   })->where('admin_id', Auth::id())->whereIn('type',[0,1])->whereBetween('current_date', [$startOfWeek, $endOfWeek])->get();
+                   })->where('admin_id', Auth::id())->whereIn('type',[0,1,2])->whereBetween('current_date', [$startOfWeek, $endOfWeek])->get();
 
                    //dd($allkatas);
 
@@ -87,7 +89,7 @@ class ReportController extends Controller
                    //dd($endOfWeek);
                    $allkatas = Kata::wherehas('user', function ($q) use ($startOfMonth, $endOfMonth, $request) {
                        $q->where('phone', $request->mobile);
-                   })->where('admin_id', Auth::id())->whereIn('type',[0,1])->whereBetween('current_date', [$startOfMonth, $endOfMonth])->get();
+                   })->where('admin_id', Auth::id())->whereIn('type',[0,1,2])->whereBetween('current_date', [$startOfMonth, $endOfMonth])->get();
                }
 
            } else if ($request->report_name == 1) {
@@ -95,7 +97,7 @@ class ReportController extends Controller
                $to_date = $request->to_date;
                $allkatas = Kata::wherehas('user', function ($q) use ($from_date, $to_date, $request) {
                    $q->where('phone', $request->mobile);
-               })->where('admin_id', Auth::id())->whereIn('type',[0,1])->whereBetween('current_date', [$from_date, $to_date])->get();
+               })->where('admin_id', Auth::id())->whereIn('type',[0,1,2])->whereBetween('current_date', [$from_date, $to_date])->get();
 
            }
 

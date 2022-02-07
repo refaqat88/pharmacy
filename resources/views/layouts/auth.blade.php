@@ -6,7 +6,7 @@
 
     <meta charset="UTF-8">
 
-    <title>Pharmacy-Log-in</title>
+    <title>Khatapoint-Log-in</title>
 
     <link rel='stylesheet' href='http://codepen.io/assets/libs/fullpage/jquery-ui.css'>
 

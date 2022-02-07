@@ -210,7 +210,7 @@ class UserController extends Controller
             }
 
             if(!empty($input['status'])){
-                $input['status'] = 'active';
+                $input['status'] = 'Active';
             }else{
                 $input['status'] = 'Inactive';
             }
