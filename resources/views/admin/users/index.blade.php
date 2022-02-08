@@ -79,14 +79,14 @@
  
                                                     </div>
 
-                                                    <div class="form-check ml-2 mt-4 col-sm-12 checkbox-general">
+                                                    {{--<div class="form-check ml-2 mt-4 col-sm-12 checkbox-general">
                                                         <label class="form-check-label">
-                                                            <input class="form-check-input" type="checkbox" name="status">
+                                                            <input class="form-check-input" type="checkbox" name="status" id="status" value="Active" />
                                                             <span class="form-check-sign"></span>
-                                                           Check if user is inactive
+                                                            Check if user is inactive
                                                         </label>
 
-                                                    </div>
+                                                    </div>--}}
                                                 </div>
                                             </div>
                                         </div>

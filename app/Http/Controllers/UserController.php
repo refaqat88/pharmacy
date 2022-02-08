@@ -156,8 +156,8 @@ class UserController extends Controller
 
     public function CreateUser(Request $request)
     {
+        $input = $request->all();
 
-        //dd($request->all());
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'username' => 'required|unique:users,username',
@@ -169,9 +169,14 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()]);
         }else{
 
-            $input = $request->all();
+
             $input['password'] = Hash::make($input['password']);
-            $input['status'] = ($request->get('status'))? 'Active' : 'Inactive';
+            if(!empty($input['status'])){
+                $input['status'] = 'Active';
+            }else{
+                $input['status'] = 'Inactive';
+            }
+            //dd($input);
             $input['admin_id'] = '';
             $user = User::create($input);
             $user->assignRole('admin');

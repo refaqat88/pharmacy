@@ -14,7 +14,7 @@
 
                             <div class="col-4 text-150 pt-25">
                                 {{--<i class="fa fa-book fa-2x text-success-m2 mr-1"></i>--}}
-                                <span class="text-default-d3"><img src="{{asset('img/upload/logo/'.Auth()->user()->user_image)}}" width="100px" height="auto"></span>
+                                <span class="text-default-d3"><img src="{{Auth::user()->photo()}}" width="100px" height="auto"></span>
                             </div>
                             <div class="col-8 text-150 pt-25">
                                 <div class="text-grey-m2">
