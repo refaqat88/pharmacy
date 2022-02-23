@@ -45,6 +45,10 @@
     <link rel="stylesheet" href="{{asset('css/jquery/jquery.dataTables.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/buttons.dataTables.min.css')}}">
     <link href="{{asset('css/custom.css')}}" rel="stylesheet')}}"/>
+    <style> .sweet-alert div.form-group {
+            display: none !important;
+        }
+    </style>
 
 @yield('front_css')
 <!-- Extra details for Live View on GitHub Pages -->

@@ -88,6 +88,26 @@
                 </a>
 
             </li>
+            <li class="{{Request::is('products') || Request::is('product/create') ? 'active' : '' || Request::is('product/show') ? 'active' : '' || Request::is('product/invoice') ? 'active' : '' }}">
+
+                <a href="{{url('products')}}">
+                    <i class="fa fa-user"></i>
+                    <p>
+                        Products
+                    </p>
+                </a>
+
+            </li>
+            <li class="{{Request::is('bills') || Request::is('bill/create') ? 'active' : '' || Request::is('bill/show') ? 'active' : '' || Request::is('bill/invoice') ? 'active' : '' }}">
+
+                <a href="{{url('bills')}}">
+                    <i class="fa fa-user"></i>
+                    <p>
+                        Bills
+                    </p>
+                </a>
+
+            </li>
            {{-- <li class="{{Request::is('permanent-katas') || Request::is('permanent-katas/create') ? 'active' : '' || Request::is('permanent-katas/show') ? 'active' : '' || Request::is('permanent-katas/invoice/{id}') ? 'active' : '' }}">
 
                 <a href="{{url('permanent-katas')}}">

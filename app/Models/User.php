@@ -63,6 +63,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Kata::class)->orderBy('id', 'desc');
     }
+    public function products()
+    {
+        return $this->hasMany(Product::class)->orderBy('id', 'desc');
+    }
 
     public function permanentKata()
     {

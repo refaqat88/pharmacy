@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KataController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\BillController;
 use App\Http\Controllers\PermanentKataController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupplierController;
@@ -53,6 +55,25 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('katas/invoice/{id}', [KataController::class, 'invoice']);
     Route::post('katas/update', [KataController::class, 'update']);
     Route::get('katas/delete', [KataController::class, 'destroy']);
+
+
+    /*Products Route*/
+
+    Route::get('products', [ProductController::class, 'index']);
+    Route::post('product/create', [ProductController::class, 'store']);
+    Route::get('product/show', [ProductController::class, 'show']);
+    Route::get('product/edit', [ProductController::class, 'edit']);
+    Route::post('product/update', [ProductController::class, 'update']);
+    Route::get('product/delete', [ProductController::class, 'destroy']);
+
+    /*BillController Route*/
+
+    Route::get('bills', [BillController::class, 'index']);
+    Route::post('bill/create', [BillController::class, 'store']);
+    Route::get('bill/show', [BillController::class, 'show']);
+    Route::get('bill/edit', [BillController::class, 'edit']);
+    Route::post('bill/update', [BillController::class, 'update']);
+    Route::get('bill/delete', [BillController::class, 'destroy']);
 
     Route::get('supplier-katas', [SupplierController::class, 'index']);
     Route::post('supplier-katas/create', [SupplierController::class, 'store']);
