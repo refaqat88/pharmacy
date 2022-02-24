@@ -1,12 +1,20 @@
 @extends('layouts.app')
 @section('title', 'Bills')
 @section('content')
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <style>
         .add-div-error{
             color:red;
         }
         .edit-div-error{
             color:red;
+        }
+        .suggesstion-box{
+
+            position: absolute;
+            background: #ddd;
+            width: 177px;
+            z-index: 999;
         }
 
     </style>
@@ -66,8 +74,8 @@
                                         </thead>
                                         <tbody>
 
-                                        @php $i=1; @endphp
-                                       {{-- @foreach($products as $product)--}}
+                                        {{--@php $i=1; @endphp
+                                       --}}{{-- @foreach($products as $product)--}}{{--
                                             <tr class="table-row" id="bill-row_1">
                                                 <td class="w-1"><input type="number" class="form-control" placeholder="" min="1" max="1000000" value="{{$i++}}"/></td>
                                                 <td class=""><input type="text" class="form-control" placeholder="" name="product_name[]" value=""/></td>
@@ -79,11 +87,11 @@
                                                 </td>
 
                                                 <td class="w2 text-center links">
-                                                    <a class="dropdown-item add-product-row" data-id="{{--{{$product->id}}--}}" href="javascript:void(0)"><i class="fa fa-plus btn-info"></i></a>
+                                                    <a class="dropdown-item add-product-row" data-id="--}}{{--{{$product->id}}--}}{{--" href="javascript:void(0)"><i class="fa fa-plus btn-info"></i></a>
 
 
                                                 </td>
-                                            </tr>
+                                            </tr>--}}
                                             {{--@endforeach--}}
 
                                         </tbody>
@@ -237,6 +245,7 @@
 
 @section('front_script')
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
     <script src="{{asset('js/core/jspdf.min.js')}}"></script>
     <script src="{{asset('js/core/jspdf-autotable.js')}}"></script>
     <script src="{{asset('js/demo.js')}}"></script>

@@ -26,6 +26,13 @@ class BillController extends Controller
         //$products = Product::where('admin_id',Auth::id())->get();
         return view('admin.bill.index');
     }
+    public function search(Request $request)
+    {
+        //dd($request->all());
+        $products = Product::where('admin_id',Auth::id())->where('prod_name','like', '%' . $request->name . '%')->get();
+
+        return response($products);
+    }
 
     /**
      * Show the form for creating a new resource.

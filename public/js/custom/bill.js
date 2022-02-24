@@ -6,49 +6,83 @@ $(document).ready(function () {
     }
 
 
+
+
+    var html = htmlApeend();
+
+    $('#datatable tbody').append(html);
+
+
+    $("#datatable tbody tr").each( function (key,valye) {
+        var rowCount = $('#datatable tbody tr').length;
+
+        var $this = $(this);
+        var id= key+1;
+        $("#"+id+" .serail").html(`<input type="number" class="form-control"  value="${id}">`);
+        if(rowCount==id){
+            $("#bill-row_"+id+" .links").html(`<a class="dropdown-item add-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-plus btn-info"></i></a>`);
+        }else{
+            $("#bill-row_"+id+" td.links").html(`<a class="dropdown-item delete-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-minus btn-info"></i></a>`);
+        }
+
+
+    })
+
+
     function htmlApeend(){
 
         var rowCount = $('#datatable tr').length;
 
 
-        var removelink = '';
-        if(rowCount>1){
-
-            var ReemovePlus = rowCount-1;
-
-            $("#bill-row_"+ReemovePlus+' .add-product-row').remove();
-
-
-            $("#bill-row_"+ReemovePlus+' .links ').html(`<a class="dropdown-item delete-product-row" data-id="${ReemovePlus}" href="javascript:void(0)"><i class="fa fa-minus btn-danger"></i></a>`);
-
-
-
-            removelink =`<a class="dropdown-item delete-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-minus btn-danger"></i></a>`;
-
-        }
 
         var html = `<tr class="table-row" id="bill-row_${rowCount}">
-                        <td class="w-1"><input type="number" class="form-control" placeholder="" min="1" max="1000000" value="${rowCount}"/></td>
-                        <td class=""><input type="text" class="form-control" placeholder="" name="product_name[]" value=""/></td>
-                        <td class=""><input class="form-control" name="item_quantity" id="item_quantity" type="number" min="1" max="1000000"/></td>
-                        <td class=""><input class="form-control" name="packet_per_box" id="packet_per_box" type="number" min="1" max="1000000"/></td>
-                        <td class=""><input class="form-control" name="item_price_supplier" id="item_price_supplier" type="number" min="1" max="1000000"/></td>
-                        <td class=""><input class="form-control" name="item_unit_price" id="item_unit_price" type="number" min="1" max="1000000"/></td>
-                        <td class=""><input class="form-control" name="item_price" id="item_price" type="number" min="1" max="1000000"/></td>
+                        <td class="w-1 serail" >
+                            <input type="number" class="form-control" placeholder="" min="1" max="1000000" value="${rowCount}"/>
+                         </td>
+                        <td class="">
+                            <input type="text" class="form-control product_name" data-id="${rowCount}" placeholder="" name="product_name[]" value=""/> 
+                            <div class="suggesstion-box" id="suggesstion-box${rowCount}"></div>
+                        </td>
+                        <td class=""><input class="form-control item_quantity" name="item_quantity[]" value="1" type="number" min="1" max="1000000"/></td>
+                        <td class=""><input class="form-control packet_per_box" name="packet_per_box[]" type="number" min="1" max="1000000"/></td>
+                        <td class=""><input class="form-control item_per_packet" name="item_per_packet[]" type="number" min="1" max="1000000"/></td>
+                        <td class=""><input class="form-control item_unit_price" name="item_unit_price[]" type="number" min="1" max="1000000"/></td>
+                        <td class=""><input class="form-control item_price" name="item_price[]"  type="number" min="1" max="1000000"/></td>
                         </td>
 
                         <td class="w2 text-center links">
                         
-                            <a class="dropdown-item add-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-plus btn-info"></i></a>
-                            ${removelink}    
+                                
 
                         </td>
                      </tr>`;
+
+
 
         return html;
 
 
     }
+
+
+
+
+
+
+    $(document).click( function () {
+        $(".suggesstion-box").hide();
+    })
+
+
+    $(document).on('click','.suggesstion-box', function (e) {
+
+        e.stopPropagation();
+
+
+
+
+    })
+
 
     $(document).on('click','.add-product-row', function () {
         var rowCount = $('#datatable tr').length;
@@ -56,10 +90,141 @@ $(document).ready(function () {
 
          var html = htmlApeend()
         $('#datatable tbody').append(html);
+
+        $("#datatable tbody tr").each( function (key,valye) {
+            var rowCount = $('#datatable tbody tr').length;
+
+            var $this = $(this);
+            var id= key+1;
+            $("#"+id+" .serail").html(`<input type="number" class="form-control"  value="${id}">`);
+            if(rowCount==id){
+                $("#bill-row_"+id+" .links").html(`<a class="dropdown-item add-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-plus btn-info"></i></a>`);
+            }else{
+                $("#bill-row_"+id+" td.links").html(`<a class="dropdown-item delete-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-minus btn-info"></i></a>`);
+            }
+
+
+        })
+
     });
+    $(document).on('keyup','.product_name', function (e) {
+        e.preventDefault();
+        var $this = $(this);
+        var id  = $this.data('id');
+        var product = $this.val();
+
+        ajaxSetting();
+
+        $.ajax({
+            url: base_url +'bill/search',
+            method: 'post',
+            data: {name:product},
+            success: function (result) {
+
+                //$('#'+tr).closest('.product_name').val(result.prod_name);
+                $("#suggesstion-box"+id).show();
+
+                var html = '';
+
+                if(result.length>0) {
+                    html += `<ul data-id="${id}" style="list-style-type:none; padding:15px 10px ">`;
+                    $.each(result, function (key, value) {
+                        html += `<li><a class="productrow" id="productrow${value.id}"   
+                                        data-id="${value.id}"  
+                                        data-row="${id}"
+                                        data-prod_name="${value.prod_name}" 
+                                        data-packet_per_box="${value.packet_per_box}" 
+                                        data-item_per_packet="${value.item_per_packet}"
+                                        data-item_price_supplier="${value.item_price_supplier}" 
+                                        data-item_price_retail="${value.item_price_retail}">${value.prod_name}</a></li>`;
+                    });
+                    html +='</ul>';
+
+                }else{
+                    html +='No product';
+
+                }
+
+                $("#suggesstion-box"+id).html(html);
+
+                //ajaxsuccess(result, 'kata-modal', 'reload');
+
+
+            }
+        });
+        //console.log(product);
+
+    });
+
+
+
+
+    $(document).on('change keyup mouseup','.item_unit_price', function () {
+        var row = $(this).closest('tr').attr('id');
+
+        var array = row.split('_');
+
+        priceCalculate(array[1]);
+    });
+
+    $(document).on('change keyup mouseup','.item_quantity', function () {
+        var row = $(this).closest('tr').attr('id');
+
+        var array = row.split('_');
+
+        priceCalculate(array[1]);
+    });
+    function priceCalculate(row){
+        var item_quantity =  $('#bill-row_'+row).find('.item_quantity').val();
+        var item_unit_price =  $('#bill-row_'+row).find('.item_unit_price').val();
+        var total = item_quantity * item_unit_price;
+        $('#bill-row_'+row).find('.item_price').val(total);
+
+    }
+
+    $(document).on('click keyup mouseup','.productrow', function () {
+       var $this= $(this);
+       var product_name=$this.data('prod_name');
+       var row=$this.data('row');
+       var packet_per_box=$this.data('packet_per_box');
+       var item_per_packet=$this.data('item_per_packet');
+       var item_price_supplier=$this.data('item_price_supplier');
+       var id = $this.data('id');
+
+       $("#bill-row_"+row).find('.product_name').val(product_name);
+       var quantity_box = $("#bill-row_"+row).find('.item_quantity').val();
+       $("#bill-row_"+row).find('.quantity_box').val(quantity_box);
+
+       $("#bill-row_"+row).find('.packet_per_box').val(packet_per_box);
+       $("#bill-row_"+row).find('.item_per_packet').val(item_per_packet);
+       var supplier_price = $("#bill-row_"+row).find('.item_unit_price').val(item_price_supplier);
+        $("#bill-row_"+row).find('.item_unit_price').val(item_price_supplier);
+
+        priceCalculate(row);
+       $("#suggesstion-box"+row).html('');
+
+    });
+
 $(document).on('click','.delete-product-row', function () {
         var id  = $(this).data('id');
         $("#bill-row_"+id).remove();
+        $("#datatable tbody tr").each( function (key,valye) {
+            var rowCount = $('#datatable tbody tr').length;
+
+            var $this = $(this);
+            var id= key+1;
+            $("#"+id+" .serail").html(`<input type="number" class="form-control"  value="${id}">`);
+            if(rowCount==id){
+                $("#bill-row_"+id+" .links").html(`<a class="dropdown-item add-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-plus btn-info"></i></a>`);
+            }else{
+                $("#bill-row_"+id+" td.links").html(`<a class="dropdown-item delete-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-minus btn-info"></i></a>`);
+            }
+
+
+        })
+
+
+
 
     });
 
@@ -153,6 +318,10 @@ $(document).on('click','.delete-product-row', function () {
 
         $("input[name=remaining_amount]").val(remaining_amount);
     }
+
+
+
+
 
     $(document).on("blur keyup load", ".calculate", function (e) {
         calculate();

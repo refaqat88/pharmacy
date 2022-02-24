@@ -70,6 +70,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('bills', [BillController::class, 'index']);
     Route::post('bill/create', [BillController::class, 'store']);
+    Route::post('bill/search', [BillController::class, 'search']);
     Route::get('bill/show', [BillController::class, 'show']);
     Route::get('bill/edit', [BillController::class, 'edit']);
     Route::post('bill/update', [BillController::class, 'update']);
