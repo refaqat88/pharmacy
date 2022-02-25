@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 /*use App\Models\Image;
 use App\Models\Kata;
 */
+
+
+use App\Models\Kata;
+use App\Models\Bill;
 use App\Models\User;
 use App\Models\Product;
 use Spatie\Permission\Models\Role;
@@ -29,7 +33,7 @@ class BillController extends Controller
     public function search(Request $request)
     {
         //dd($request->all());
-        $products = Product::where('admin_id',Auth::id())->where('prod_name','like', '%' . $request->name . '%')->get();
+        $products = Product::where('admin_id',Auth::id())->where('prod_status','Active')->where('prod_name','like', '%' . $request->name . '%')->get();
 
         return response($products);
     }
@@ -46,23 +50,23 @@ class BillController extends Controller
 
         $user = User::where('phone',$request->mobile)->first();
 
-        $previous_kata['remaining_amount']=0;
-        $previous_kata['image'] = 'no-image.png';
+        //$previous_kata['remaining_amount']=0;
+        //$previous_kata['image'] = 'no-image.png';
        if ($user){
-           $total_amount = Product::where(['admin_id' => Auth::id(),'user_id' => $user->id])->whereIn('type',[2])->orderBy('id', 'desc')->first();
-           //dd($total_amount->remaining_amount);
+           $total_amount = Kata::where(['admin_id' => Auth::id(),'user_id' => $user->id])->whereIn('type',[2])->orderBy('id', 'desc')->first();
+
            if ($total_amount != ''){
                $previous_kata['remaining_amount'] = $total_amount->remaining_amount;
                $previous_kata['name'] = $user->name;
-               $previous_kata['page_no'] = $total_amount->page_no;
+               //$previous_kata['page_no'] = $total_amount->page_no;
                $previous_kata['address'] = $total_amount->address;
-               $previous_kata['type'] = $total_amount->type;
-               $previous_kata['image'] = $total_amount->image !=''?$total_amount->image:'no-image.png';
+                //$previous_kata['type'] = $total_amount->type;
+               /* $previous_kata['image'] = $total_amount->image !=''?$total_amount->image:'no-image.png';*/
            }else{
                $previous_kata['name'] = $user->name;
-               $previous_kata['page_no'] = $user->kata?$user->kata->page_no:'';
+               //$previous_kata['page_no'] = $user->kata?$user->kata->page_no:'';
                $previous_kata['address'] = $user->kata?$user->kata->address:'';
-               $previous_kata['type'] = $total_amount->type;
+               //$previous_kata['type'] = $total_amount->type;
 
            }
 
@@ -85,11 +89,14 @@ class BillController extends Controller
         $input = $request->all();
         //dd($input);
         $validator = Validator::make($request->all(), [
-            'product_name' =>'required',
+            'mobile' =>'required|numeric',
+            'name' =>'required',
+            'address' =>'required',
+            /*'product_name' =>'required',
             'packet_per_box' => 'required|numeric',
             'item_per_packet' => 'required|numeric',
             'item_price_supplier' => 'required|numeric',
-            'item_price_retailer' => 'required|numeric',
+            'item_price_retailer' => 'required|numeric',*/
             //'product_status' => 'required',
 
         ]);
@@ -98,22 +105,85 @@ class BillController extends Controller
             return response()->json(['errors' => $validator->errors()]);
         }else {
 
-            $product = new Product();
+            $user = User::where('phone', $request->mobile)->first();
 
-            $product->prod_name = $request->product_name;
-            $product->packet_per_box = $request->packet_per_box;
-            $product->item_per_packet = $request->item_per_packet;
-            $product->item_price_supplier = $request->item_price_supplier;
-            $product->item_price_retail = $request->item_price_retailer;
-            $product->prod_status = $request->product_status=='Inactive'?'Inactive':'Active';
-            $product->date = date('Y-m-d');
-            $product->admin_id = Auth::id();
-            $product->save();
+            if (!$user) {
+                $data = [
+                    'name' => $request->name,
+                    'phone' => $request->mobile,
+                    'username' => $request->mobile,
+                    'password' => hash::Make($request->mobile),
+                    'status' => 'Active',
+                ];
+                $useradd = User::create($data);
+
+                $i=0;
+
+                foreach ($request->product_name as $key => $value) {
+                    $bill = new Bill();
+                    $bill->user_id = $useradd->id;
+                    $bill->prod_name = $request->product_name[$i];
+                    $bill->quantity = $request->item_quantity[$i];
+                    $bill->packet_per_box = $request->packet_per_box[$i];
+                    $bill->item_per_packet = $request->item_per_packet[$i];
+                    $bill->item_price_supplier = $request->item_unit_price[$i];
+                    $bill->total_price = $request->item_price[$i];
+                    $bill->date = date('Y-m-d');
+                    $bill->admin_id = Auth::id();
+                    $bill->save();
+                    if ($request->product_id[$i] == ''){
+                        $product = new Product();
+                        $product->prod_name = $request->product_name[$i];
+                        $product->packet_per_box = $request->packet_per_box[$i];
+                        $product->item_per_packet = $request->item_per_packet[$i];
+                        $product->item_price_supplier = $request->item_unit_price[$i];
+                        //$product->item_price_retail = $request->item_price_retailer[$i];
+                        $product->prod_status = 'Active';
+                        $product->date = date('Y-m-d');
+                        $product->admin_id = Auth::id();
+
+
+                        $product->save();
+                    }
+                    $i++;
+                }
+            } else {
+
+                $i=0;
+                foreach ($request->product_name as $key => $value) {
+                    $bill = new Bill();
+                    $bill->user_id = $user->id;
+                    $bill->prod_name = $request->product_name[$i];
+                    $bill->quantity = $request->item_quantity[$i];
+                    $bill->packet_per_box = $request->packet_per_box[$i];
+                    $bill->item_per_packet = $request->item_per_packet[$i];
+                    $bill->item_price_supplier = $request->item_unit_price[$i];
+                    $bill->total_price = $request->item_price[$i];
+                    $bill->date = date('Y-m-d');
+                    $bill->admin_id = Auth::id();
+                    $bill->save();
+                    if ($request->product_id[$i] == ''){
+                    $product = new Product();
+                    $product->prod_name = $request->product_name[$i];
+                    $product->packet_per_box = $request->packet_per_box[$i];
+                    $product->item_per_packet = $request->item_per_packet[$i];
+                    $product->item_price_supplier = $request->item_unit_price[$i];
+                    //$product->item_price_retail = $request->item_price_retailer[$i];
+                    $product->prod_status = 'Active';
+                    $product->date = date('Y-m-d');
+                    $product->admin_id = Auth::id();
+
+
+                        $product->save();
+                    }
+                    $i++;
+                }
 
         }
 
             return response()->json(['message' => 'Successfully Added!']);
         }
+    }
 
 
     /**

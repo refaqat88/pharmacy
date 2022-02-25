@@ -13,7 +13,7 @@
 
             position: absolute;
             background: #ddd;
-            width: 177px;
+            width: 15%;
             z-index: 999;
         }
 
@@ -23,16 +23,15 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card ">
-                    <div class="card-header ">
-
-
+                   {{-- <div class="card-header ">
                         <div class="row">
-                            <h4 class="card-title col-md-6 mr-0">{{--Bills--}}</h4>
+                            <h4 class="card-title col-md-6 mr-0">--}}{{--Bills--}}{{--</h4>
                             <div class="col-md-6">
                                 <a type="button" class="btn btn-secondary btn-round add-product-row float-right" id="add-product-row" href="javascript:void(0)">Add More</a>
                             </div>
                         </div>
-                    </div>
+                    </div>--}}
+                    <form id="bill-form" method="post" action="{{url('bill/create')}}">
                     <div class="row">
                         <div class="col-md-12">
                              <div class="card">
@@ -44,19 +43,19 @@
                                     <div class="form-group mobile col-sm-3">
                                         <label>Mobile</label>
                                         <input type="text" class="form-control mobile-number" placeholder="" name="mobile" id="mobile"/>
-
+                                        <div class="add-div-error mobile"></div>
                                     </div>
 
                                     <div class="form-group name col-sm-3">
                                         <label>Name</label>
                                         <input type="text" class="form-control" placeholder="" name="name" id="name"/>
-
+                                        <div class="add-div-error name"></div>
                                     </div>
 
                                     <div class="form-group address col-sm-6 select-wizard">
                                         <label>Address</label>
                                         <input class="form-control" name="address" id="address" type="text"/>
-
+                                        <div class="add-div-error address"></div>
                                     </div>
                                     </div>
                                     <table id="datatable" class="table table-hover custom_border" cellspacing="0" width="100%">
@@ -97,10 +96,18 @@
                                         </tbody>
                                     </table>
                                 </div><!-- end content-->
+                                 <div class="card-footer">
+                                     <div class="pull-right">
+
+                                         <input type='submit'
+                                                class='btn btn-finish  btn-secondary btn-fill btn-rose btn-wd btn-round  edit-admission-btn-save-exit-submit'
+                                                name='finish' value='Submit'/>
+                                     </div>
+                                 </div>
                             </div><!--  end card  -->
                         </div> <!-- end col-md-12 -->
                     </div> <!-- end row -->
-
+                    </form>
                 </div>
 
             </div>

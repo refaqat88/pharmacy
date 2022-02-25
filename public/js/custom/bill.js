@@ -40,14 +40,17 @@ $(document).ready(function () {
                             <input type="number" class="form-control" placeholder="" min="1" max="1000000" value="${rowCount}"/>
                          </td>
                         <td class="">
-                            <input type="text" class="form-control product_name" data-id="${rowCount}" placeholder="" name="product_name[]" value=""/> 
-                            <div class="suggesstion-box" id="suggesstion-box${rowCount}"></div>
+                            <input type="text" class="form-control product_name" data-id="${rowCount}" placeholder="" name="product_name[]" required value=""/> 
+                            <input type="hidden" class="form-control product_id"  placeholder="" name="product_id[]" value=""/>
+                            <div class="suggesstion-box" id="suggesstion-box${rowCount}">
+                            <div class="add-div-error product_name"></div>
+</div>
                         </td>
-                        <td class=""><input class="form-control item_quantity" name="item_quantity[]" value="1" type="number" min="1" max="1000000"/></td>
-                        <td class=""><input class="form-control packet_per_box" name="packet_per_box[]" type="number" min="1" max="1000000"/></td>
-                        <td class=""><input class="form-control item_per_packet" name="item_per_packet[]" type="number" min="1" max="1000000"/></td>
-                        <td class=""><input class="form-control item_unit_price" name="item_unit_price[]" type="number" min="1" max="1000000"/></td>
-                        <td class=""><input class="form-control item_price" name="item_price[]"  type="number" min="1" max="1000000"/></td>
+                        <td class=""><input class="form-control item_quantity" name="item_quantity[]" required value="1" type="number" min="1" max="1000000"/></td>
+                        <td class=""><input class="form-control packet_per_box" name="packet_per_box[]" required type="number" min="1" max="1000000"/></td>
+                        <td class=""><input class="form-control item_per_packet" name="item_per_packet[]" required type="number" min="1" max="1000000"/></td>
+                        <td class=""><input class="form-control item_unit_price" name="item_unit_price[]" required type="number" min="1" max="1000000"/></td>
+                        <td class=""><input class="form-control item_price" name="item_price[]" required  type="number" min="1" max="1000000"/></td>
                         </td>
 
                         <td class="w2 text-center links">
@@ -100,7 +103,7 @@ $(document).ready(function () {
             if(rowCount==id){
                 $("#bill-row_"+id+" .links").html(`<a class="dropdown-item add-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-plus btn-info"></i></a>`);
             }else{
-                $("#bill-row_"+id+" td.links").html(`<a class="dropdown-item delete-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-minus btn-info"></i></a>`);
+                $("#bill-row_"+id+" td.links").html(`<a class="dropdown-item delete-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-minus btn-warning"></i></a>`);
             }
 
 
@@ -183,15 +186,17 @@ $(document).ready(function () {
     }
 
     $(document).on('click keyup mouseup','.productrow', function () {
-       var $this= $(this);
+       var $this = $(this);
        var product_name=$this.data('prod_name');
-       var row=$this.data('row');
+       var product_id=$this.data('id');
+       var row = $this.data('row');
        var packet_per_box=$this.data('packet_per_box');
        var item_per_packet=$this.data('item_per_packet');
        var item_price_supplier=$this.data('item_price_supplier');
        var id = $this.data('id');
 
        $("#bill-row_"+row).find('.product_name').val(product_name);
+       $("#bill-row_"+row).find('.product_id').val(product_id);
        var quantity_box = $("#bill-row_"+row).find('.item_quantity').val();
        $("#bill-row_"+row).find('.quantity_box').val(quantity_box);
 
@@ -217,7 +222,7 @@ $(document).on('click','.delete-product-row', function () {
             if(rowCount==id){
                 $("#bill-row_"+id+" .links").html(`<a class="dropdown-item add-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-plus btn-info"></i></a>`);
             }else{
-                $("#bill-row_"+id+" td.links").html(`<a class="dropdown-item delete-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-minus btn-info"></i></a>`);
+                $("#bill-row_"+id+" td.links").html(`<a class="dropdown-item delete-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-minus btn-warning"></i></a>`);
             }
 
 
@@ -250,7 +255,7 @@ $(document).on('click','.delete-product-row', function () {
         e.preventDefault();
     });
 
-    $('form#product-form').submit(function (e) {
+    $('form#bill-form').submit(function (e) {
 
         var $this = $(this);
         var url = $this.attr('action');
@@ -267,11 +272,51 @@ $(document).on('click','.delete-product-row', function () {
             data: productdata,
             success: function (result) {
 
+                if (result.errors) {
+                    //$('#add-alert-danger').html('');
+                    //$('#success-message').html('');
+                    $('.add-div-error').text('');
+                    //$(".admission-btn-save-exit-submit").prop("disabled", false );
+                    $.each(result.errors, function(key, value) {
+                        //alert(value);
 
-                ajaxsuccess(result, 'kata-modal', 'reload');
+                        $('#add-div-error').show();
+
+                        $('.add-div-error.' + key).text(value);
+
+                        $('.add-div-error .' + key).show();
+
+                        /*if (value != "") {
+
+                            swal("Oops!", "Nadra B Form Already Exist!", "error");
+                        }*/
+                        //$('.alert-danger').show();
+                    });
+                } else {
+                   // $('#success-message').html('');
+                    $('.add-div-error').text('');
+                    //$('#class-section-modal').modal('hide');
+                    //$('#success-message').show();
+                    //$('#success-message').append('<p>' + result.message + '</p>');
+                    //$('#success-alert').show();
+                    //$('#success-alert').text('Successfully Added!').fadeIn('slow');
+                    //$('#success-message').delay(2000).fadeOut('slow');
+                    swal({
+                        title: "Added successfully!",
+                        type: "success",
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                    });
+                    setTimeout(function() { window.location.href = base_url + "bills"; }, 2000);
 
 
-            }
+                }
+
+
+
+                }
+
+            //}
         });
     });
 
@@ -279,7 +324,7 @@ $(document).on('click','.delete-product-row', function () {
         e.preventDefault();
         var $this = $(this);
         var mobile = $("input[name=mobile]").val();
-        var url = base_url + "katas/mobile";
+        var url = base_url + "supplier-katas/mobile";
         ajaxSetting();
         $.ajax({
             url: url,
@@ -291,18 +336,18 @@ $(document).on('click','.delete-product-row', function () {
             },
             success: function (result) {
                 console.log(result);
-                $("#form_add #mobileremaining_amount").val(result.remaining_amount!=''? parseInt(result.remaining_amount):0);
-                $("#form_add #name").val(result.name!=''? result.name:'');
-                $("#form_add #address").val(result.address!=''? result.address:'');
-                $("#form_add #page_no").val(result.page_no!=''? result.page_no:'');
-                $("#form_add #khata_type").val(result.type).trigger('change');
-                if (result.image !='' || result.image != undefined){
+                //$("#form_add #mobileremaining_amount").val(result.remaining_amount!=''? parseInt(result.remaining_amount):0);
+                $("#bill-form #name").val(result.name!=''? result.name:'');
+                $("#bill-form #address").val(result.address!=''? result.address:'');
+                //$("#form_add #page_no").val(result.page_no!=''? result.page_no:'');
+                //$("#form_add #khata_type").val(result.type).trigger('change');
+               /* if (result.image !='' || result.image != undefined){
                     $("#form_add #kata_image").attr('src', asset_url + '/img/upload/khata/'+ result.image);
-                }
+                }*/
 
 
 
-                calculate();
+                //calculate();
             }
         })
 
