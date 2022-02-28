@@ -33,7 +33,7 @@ class BillController extends Controller
     public function search(Request $request)
     {
         //dd($request->all());
-        $products = Product::where('admin_id',Auth::id())->where('prod_status','Active')->where('prod_name','like', '%' . $request->name . '%')->get();
+        $products = Product::where('admin_id',Auth::id())->where('prod_status','Active')->where('prod_name','like',$request->name . '%')->get();
 
         return response($products);
     }
@@ -87,17 +87,11 @@ class BillController extends Controller
     {
 
         $input = $request->all();
-        //dd($input);
+
         $validator = Validator::make($request->all(), [
             'mobile' =>'required|numeric',
             'name' =>'required',
             'address' =>'required',
-            /*'product_name' =>'required',
-            'packet_per_box' => 'required|numeric',
-            'item_per_packet' => 'required|numeric',
-            'item_price_supplier' => 'required|numeric',
-            'item_price_retailer' => 'required|numeric',*/
-            //'product_status' => 'required',
 
         ]);
 
@@ -115,74 +109,46 @@ class BillController extends Controller
                     'password' => hash::Make($request->mobile),
                     'status' => 'Active',
                 ];
-                $useradd = User::create($data);
+                $user = User::create($data);
+            }
 
-                $i=0;
+            $i=0;
+            foreach ($request->product_name as $key => $value) {
+                        $product = (object)[];
 
-                foreach ($request->product_name as $key => $value) {
-                    $bill = new Bill();
-                    $bill->user_id = $useradd->id;
-                    $bill->prod_name = $request->product_name[$i];
-                    $bill->quantity = $request->item_quantity[$i];
-                    $bill->packet_per_box = $request->packet_per_box[$i];
-                    $bill->item_per_packet = $request->item_per_packet[$i];
-                    $bill->item_price_supplier = $request->item_unit_price[$i];
-                    $bill->total_price = $request->item_price[$i];
-                    $bill->date = date('Y-m-d');
-                    $bill->admin_id = Auth::id();
-                    $bill->save();
-                    if ($request->product_id[$i] == ''){
-                        $product = new Product();
-                        $product->prod_name = $request->product_name[$i];
-                        $product->packet_per_box = $request->packet_per_box[$i];
-                        $product->item_per_packet = $request->item_per_packet[$i];
-                        $product->item_price_supplier = $request->item_unit_price[$i];
-                        //$product->item_price_retail = $request->item_price_retailer[$i];
-                        $product->prod_status = 'Active';
-                        $product->date = date('Y-m-d');
-                        $product->admin_id = Auth::id();
+                        $product->id =$request->product_id[$i];
 
+                        if (empty($request->product_id[$i])){
+                            $product = new Product();
+                            $product->prod_name = $request->product_name[$i];
+                            $product->packet_per_box = $request->packet_per_box[$i];
+                            $product->item_per_packet = $request->item_per_packet[$i];
+                            $product->item_price_supplier = $request->item_unit_price[$i];
+                            //$product->item_price_retail = $request->item_price_retailer[$i];
+                            $product->prod_status = 'Active';
+                            $product->date = date('Y-m-d');
+                            $product->admin_id = Auth::id();
+                            $product->save();
+                        }
 
-                        $product->save();
+                        $bill = new Bill();
+                        $bill->user_id = $user->id;
+                        $bill->product_id = $product->id;
+                        $bill->quantity = $request->item_quantity[$i];
+                        $bill->packet_per_box = $request->packet_per_box[$i];
+                        $bill->item_per_packet = $request->item_per_packet[$i];
+                        $bill->item_price_supplier = $request->item_unit_price[$i];
+                        $bill->total_price = $request->item_price[$i];
+                        $bill->date = date('Y-m-d');
+                        $bill->admin_id = Auth::id();
+                        $bill->save();
+
+                        $i++;
                     }
-                    $i++;
-                }
-            } else {
-
-                $i=0;
-                foreach ($request->product_name as $key => $value) {
-                    $bill = new Bill();
-                    $bill->user_id = $user->id;
-                    $bill->prod_name = $request->product_name[$i];
-                    $bill->quantity = $request->item_quantity[$i];
-                    $bill->packet_per_box = $request->packet_per_box[$i];
-                    $bill->item_per_packet = $request->item_per_packet[$i];
-                    $bill->item_price_supplier = $request->item_unit_price[$i];
-                    $bill->total_price = $request->item_price[$i];
-                    $bill->date = date('Y-m-d');
-                    $bill->admin_id = Auth::id();
-                    $bill->save();
-                    if ($request->product_id[$i] == ''){
-                    $product = new Product();
-                    $product->prod_name = $request->product_name[$i];
-                    $product->packet_per_box = $request->packet_per_box[$i];
-                    $product->item_per_packet = $request->item_per_packet[$i];
-                    $product->item_price_supplier = $request->item_unit_price[$i];
-                    //$product->item_price_retail = $request->item_price_retailer[$i];
-                    $product->prod_status = 'Active';
-                    $product->date = date('Y-m-d');
-                    $product->admin_id = Auth::id();
-
-
-                        $product->save();
-                    }
-                    $i++;
-                }
-
-        }
+            }
 
             return response()->json(['message' => 'Successfully Added!']);
-        }
+
     }
 
 

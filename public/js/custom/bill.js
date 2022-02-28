@@ -127,6 +127,26 @@ $(document).ready(function () {
                 //$('#'+tr).closest('.product_name').val(result.prod_name);
                 $("#suggesstion-box"+id).show();
 
+                var row = $this.closest('tr').attr('id');
+
+                $("#"+row).find('.product_id').val('');
+
+
+                if(result.length==1){
+
+
+                    var product = '';
+                    $.each(result, function (key, value) {
+                         product = value.id;
+                    })
+                    $("#"+row).find('.product_id').val(product);
+
+                }
+
+
+
+
+
                 var html = '';
 
                 if(result.length>0) {
@@ -168,6 +188,7 @@ $(document).ready(function () {
         var array = row.split('_');
 
         priceCalculate(array[1]);
+
     });
 
     $(document).on('change keyup mouseup','.item_quantity', function () {
@@ -182,6 +203,19 @@ $(document).ready(function () {
         var item_unit_price =  $('#bill-row_'+row).find('.item_unit_price').val();
         var total = item_quantity * item_unit_price;
         $('#bill-row_'+row).find('.item_price').val(total);
+
+
+            var sum = 0;
+    // iterate through each td based on class and add the values
+            $(".item_price").each(function() {
+
+                var value = $(this).val();
+                // add only if the value is number
+                if(!isNaN(value) && value.length != 0) {
+                    sum += parseFloat(value);
+                }
+            });
+            $('.total_price').val(sum);
 
     }
 
@@ -225,7 +259,7 @@ $(document).on('click','.delete-product-row', function () {
                 $("#bill-row_"+id+" td.links").html(`<a class="dropdown-item delete-product-row" data-id="${rowCount}" href="javascript:void(0)"><i class="fa fa-minus btn-warning"></i></a>`);
             }
 
-
+            priceCalculate(rowCount)
         })
 
 
