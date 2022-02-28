@@ -31,7 +31,7 @@
                             </div>
                         </div>
                     </div>--}}
-                    <form id="bill-form" method="post" action="{{url('bill/create')}}">
+                    <form id="bill-form" method="post" action="{{url('bill/create')}}" autocomplete="off">
                     <div class="row">
                         <div class="col-md-12">
                              <div class="card">
@@ -94,7 +94,36 @@
                                             {{--@endforeach--}}
 
                                         </tbody>
+
+
                                     </table>
+                                    <table id="" class="table table-hovers" cellspacing="0" width="100%">
+
+                                        <tbody>
+
+                                        </tbody>
+                                        <tfoot>
+                                        <th style="font-size:11px; width:5%" class="text-center"></th>
+                                        <th style="font-size:11px; width:15%" class=""></th>
+                                        <th style="font-size:11px; width:10%" class=""></th>
+                                        <th style="font-size:11px; width:15%" class=""></th>
+                                        <th style="font-size:11px; width:15%" class=""></th>
+                                        <th style="font-size:11px; width:15%" class=""></th>
+
+                                        <th style="font-size:11px; width:15%" class="">Total Price
+                                            <input type='number' disabled="disabled"
+                                                   class="form-control w-100 total_price"
+                                                   value='0'/>
+                                        </th>
+                                        <th style="font-size:11px; width:15%" class=""></th>
+
+                                        </tfoot>
+
+
+                                    </table>
+
+
+
                                 </div><!-- end content-->
                                  <div class="card-footer">
                                      <div class="pull-right">
