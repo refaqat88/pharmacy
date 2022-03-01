@@ -47,7 +47,8 @@ class SupplierController extends Controller
         $previous_kata['remaining_amount']=0;
         $previous_kata['image'] = 'no-image.png';
        if ($user){
-           $total_amount = Kata::where('admin_id', Auth::id())->where('user_id', $user->id)->whereIn('type',[2])->orderBy('id', 'desc')->first();
+           $total_amount = Kata::where(['admin_id' => Auth::id(),'user_id' => $user->id])->whereIn('type',[2])->orderBy('id', 'desc')->first();
+           //$total_amount = Kata::where('admin_id', Auth::id())->where('user_id', $user->id)->whereIn('type',[2])->orderBy('id', 'desc')->first();
            //dd($total_amount->remaining_amount);
            if ($total_amount != ''){
                $previous_kata['remaining_amount'] = $total_amount->remaining_amount;

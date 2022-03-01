@@ -52,6 +52,7 @@
 
                                         @php $i=1; @endphp
                                         @foreach ($allusers as $key => $user)
+                                         @php   $kata_id = $user->kata?$user->kata->id:''; @endphp
                                             <tr>
                                                 <td class="w-1 text-center">{{$i++}}</td>
                                                 <td>{{ $user->name }}</td>
@@ -76,7 +77,7 @@
                                                                 <a class="dropdown-item show-katas" data-id="{{$user->id}}" href="javascript:void(0)">Show</a>
                                                                 <a class="dropdown-item" href="{{url('supplier-katas/invoice/'.$user->id)}}">Invoice</a>
                                                                 <a class="dropdown-item edit-katas" data-id="{{$user->id}}" href="javascript:void(0)">Edit</a>
-                                                                <a class="dropdown-item delete-katas" data-id="{{$user->id}}" href="javascript:void(0)">Delete</a>
+                                                                <a class="dropdown-item delete-katas" data-id="{{$kata_id}}" href="javascript:void(0)">Delete</a>
 
                                                                 {{--{!! Form::open(['method' => 'DELETE','route' => ['roles.destroy', $kata->id],'style'=>'display:inline']) !!}
                                                                 {!! Form::submit('Delete', ['class' => 'dropdown-item']) !!}

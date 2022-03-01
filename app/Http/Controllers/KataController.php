@@ -119,11 +119,11 @@ class KataController extends Controller
                     'status' => 'Active',
                 ];
 
-                $useradd = User::create($data);
-
+                $user = User::create($data);
+            }
                 $input['receipt_no'] = $receipt;
                 $input['current_date'] = date('Y-m-d');
-                $input['user_id'] = $useradd->id;
+                $input['user_id'] = $user->id;
                 $input['admin_id'] = Auth::id();
                 $input['type'] = $request->khata_type;
                 $kata = Kata::create($input);
@@ -144,7 +144,7 @@ class KataController extends Controller
 
 
                 //$user_id = $useradd->id;
-            } else {
+       /*      else {
                 $user_id = $user->id;
                 $input = $request->all();
                 $input['receipt_no'] = $receipt;
@@ -171,7 +171,7 @@ class KataController extends Controller
                 }
 
 
-            }
+            }*/
 
 
         }

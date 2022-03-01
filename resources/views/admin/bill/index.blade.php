@@ -111,7 +111,7 @@
                                         <th style="font-size:11px; width:15%" class=""></th>
 
                                         <th style="font-size:11px; width:15%" class="">Total Price
-                                            <input type='number' disabled="disabled"
+                                            <input type='number' readonly name="total_price"
                                                    class="form-control w-100 total_price"
                                                    value='0'/>
                                         </th>

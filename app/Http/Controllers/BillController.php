@@ -87,7 +87,7 @@ class BillController extends Controller
     {
 
         $input = $request->all();
-
+        //dd($input);
         $validator = Validator::make($request->all(), [
             'mobile' =>'required|numeric',
             'name' =>'required',
@@ -100,7 +100,17 @@ class BillController extends Controller
         }else {
 
             $user = User::where('phone', $request->mobile)->first();
+            $remaining = 0;
+            $remaining = $user->kata? $user->kata->remaining_amount:0;
+            //dd($remaining);
+            $receipt = Kata::select('receipt_no')->orderBy('receipt_no', 'Desc')->first();
 
+            if ($receipt) {
+                $receipt = $receipt->receipt_no + 1;
+            } else {
+                $receipt = 1000;
+            }
+            //dd($user->kata);
             if (!$user) {
                 $data = [
                     'name' => $request->name,
@@ -145,6 +155,22 @@ class BillController extends Controller
 
                         $i++;
                     }
+
+                    $kata = new Kata();
+                    $kata->user_id =  $user->id;
+                    $kata->receipt_no = $receipt;
+                    $kata->address = $request->address;
+                    $kata->total_amount = $request->total_price + $remaining;
+                    $kata->remaining_amount = $request->total_price + $remaining;
+                    $kata->paid_amount = 0;
+                    $kata->current_date = date('Y-m-d');
+                    $kata->paid_date = date('Y-m-d');
+                    $kata->amount_status = "Bill";
+                    $kata->admin_id = Auth::id();
+                    $kata->type = 2;
+
+
+                    $kata->save();
             }
 
             return response()->json(['message' => 'Successfully Added!']);
