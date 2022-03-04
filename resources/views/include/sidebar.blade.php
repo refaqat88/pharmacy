@@ -98,12 +98,22 @@
                 </a>
 
             </li>
-            <li class="{{Request::is('bills') || Request::is('bill/create') ? 'active' : '' || Request::is('bill/show') ? 'active' : '' || Request::is('bill/invoice') ? 'active' : '' }}">
+            <li class="{{Request::is('bills')  ? 'active' : '' }}">
 
                 <a href="{{url('bills')}}">
                     <i class="fa fa-user"></i>
                     <p>
                         Bills
+                    </p>
+                </a>
+
+            </li>
+            <li class="{{ Request::is('bill/add') ? 'active' : '' || Request::is('bill/create') ? 'active' : ''  ? 'active' : '' || Request::is('bill/invoice') ? 'active' : '' }}">
+
+                <a href="{{url('bill/add')}}">
+                    <i class="fa fa-user"></i>
+                    <p>
+                        Add Bill
                     </p>
                 </a>
 

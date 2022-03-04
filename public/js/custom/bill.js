@@ -37,7 +37,7 @@ $(document).ready(function () {
 
         var html = `<tr class="table-row" id="bill-row_${rowCount}">
                         <td class="w-1 serail" >
-                            <input type="number" class="form-control" placeholder="" min="1" max="1000000" value="${rowCount}"/>
+                            <input type="number" class="form-control"  name="serial_no[]" placeholder="" min="1" max="1000000" value="${rowCount}"/>
                          </td>
                         <td class="">
                             <input type="text" class="form-control product_name" data-id="${rowCount}" placeholder="" name="product_name[]" required value=""/> 
@@ -446,15 +446,15 @@ $(document).on('click','.delete-product-row', function () {
 
     });*/
 
-    $(document).on("click", ".show-product", function (e) {
+    $(document).on("click", ".show-bill", function (e) {
         e.preventDefault();
         var $this = $(this);
         var id = $this.data('id');
-        var url = base_url + "product/show";
+        var url = base_url + "bill/show";
         //var url = $this.attr('href');
         //alert(url);
 
-        $('#show-product-modal').modal('show');
+        $('#show-bill-modal').modal('show');
         ajaxSetting();
         $.ajax({
             url: url,
@@ -466,22 +466,25 @@ $(document).on('click','.delete-product-row', function () {
             },
             success: function (result) {
 
-                console.log(result);
+                //console.log(result);
 
-                $("#show-product-name").text(result.prod_name);
-                $("#show-packet-per-box").text(result.packet_per_box);
-                $("#show-item-per-packet").text(result.item_per_packet);
-                $("#show-item-price-supplier").text(result.item_price_supplier);
-                $("#show-item-price-retailer").text(result.item_price_retail);
-                $("#show-product-status").text(result.prod_status);
-                $("#show-product-date").text(result.date);
-                /* $("#show-total-amount").text(result.total_amount);
-                 $("#show-remaining-amount").text(result.remaining_amount);
-                 $("#show-amount-status").text(result.amount_status);
-                 $("#show-khata-type").text(result.type);*/
-                /*if (result.image !='' || result.image != undefined){
-                  $("#show-image").attr('src', asset_url + '/img/upload/khata/'+ result.image);
-                }*/
+                $("#show-user-name").text(result.name);
+                $("#show-user-phone").text(result.phone);
+                $("#show-address").text(result.address);
+                $("#show_total_price").text(result.total_price);
+                $('#show-Bill-datatable tbody').html('');
+                $.each(result.bill_info, function (key, value) {
+                    console.log("value>>>>>>>",value);
+                    $('#show-Bill-datatable tbody').append(`<tr class="table-row">
+                                        <td class="w-1">${value.s_no} </td>                                     
+                                        <td class="">${value.product} (${value.quantity} ✕ ${value.packet_per_box} ✕ ${value.item_per_packet})</td>
+                                   
+                                        <td class="">${value.item_price_supplier}</td>
+                                        <td class="">${value.item_price}</td>
+                                
+                                        </tr>`);
+
+                });
 
             }
         })

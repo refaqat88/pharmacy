@@ -27,8 +27,16 @@ class BillController extends Controller
     public function index()
     {
 
+        $bills = Bill::where('admin_id',Auth::id())->get();
+        //dd($students);
+        //$bills = Bill::where('admin_id',Auth::id())->get();
+        return view('admin.bill.index', compact('bills'));
+    }
+    public function addBill()
+    {
+
         //$products = Product::where('admin_id',Auth::id())->get();
-        return view('admin.bill.index');
+        return view('admin.bill.add');
     }
     public function search(Request $request)
     {
@@ -141,37 +149,65 @@ class BillController extends Controller
                             $product->save();
                         }
 
-                        $bill = new Bill();
+                        $i++;
+                    }
+
+                $bill = new Bill();
+
+
+                $data = [];
+
+                if (!empty($request->product_name)) {
+
+                    $count = count($request->product_name);
+                    $j = 0;
+                    while ($j < $count) {
+
+                        $data[] = array(
+                            "s_no" => $request->serial_no[$j],
+                            //"product_id" => $request->qual_title[$i],
+                            "product" => $request->product_name[$j],
+                            "quantity" => $request->item_quantity[$j],
+                            "packet_per_box" => $request->packet_per_box[$j],
+                            "item_per_packet" => $request->item_per_packet[$j],
+                            "item_price_supplier" => $request->item_unit_price[$j],
+                            "item_price" => $request->item_price[$j],
+                            "total_price" => $request->total_price
+                        );
+                        $j++;
+                    }
+                    //dd($data);
+                }
+
+                        $serialized_bill_array = serialize($data);
+
+                        //dd($serialized_bill_array);
+
+
                         $bill->user_id = $user->id;
-                        $bill->product_id = $product->id;
-                        $bill->quantity = $request->item_quantity[$i];
-                        $bill->packet_per_box = $request->packet_per_box[$i];
-                        $bill->item_per_packet = $request->item_per_packet[$i];
-                        $bill->item_price_supplier = $request->item_unit_price[$i];
-                        $bill->total_price = $request->item_price[$i];
+                        $bill->bill_info = $serialized_bill_array;
+                        $bill->total_price = $request->total_price;
                         $bill->date = date('Y-m-d');
                         $bill->admin_id = Auth::id();
                         $bill->save();
 
-                        $i++;
-                    }
 
-                    $kata = new Kata();
-                    $kata->user_id =  $user->id;
-                    $kata->receipt_no = $receipt;
-                    $kata->address = $request->address;
-                    $kata->total_amount = $request->total_price + $remaining;
-                    $kata->remaining_amount = $request->total_price + $remaining;
-                    $kata->paid_amount = 0;
-                    $kata->current_date = date('Y-m-d');
-                    $kata->paid_date = date('Y-m-d');
-                    $kata->amount_status = "Bill";
-                    $kata->admin_id = Auth::id();
-                    $kata->type = 2;
+                $kata = new Kata();
+                        $kata->user_id =  $user->id;
+                        $kata->receipt_no = $receipt;
+                        $kata->address = $request->address;
+                        $kata->total_amount = $request->total_price + $remaining;
+                        $kata->remaining_amount = $request->total_price + $remaining;
+                        $kata->paid_amount = 0;
+                        $kata->current_date = date('Y-m-d');
+                        $kata->paid_date = date('Y-m-d');
+                        $kata->amount_status = "Bill";
+                        $kata->admin_id = Auth::id();
+                        $kata->type = 2;
 
 
-                    $kata->save();
-            }
+                        $kata->save();
+                }
 
             return response()->json(['message' => 'Successfully Added!']);
 
@@ -197,8 +233,14 @@ class BillController extends Controller
 
     public function show(Request $request)
     {
-        $product = Product::where('id',$request->id)->where('admin_id', Auth::id())->first();
-        return response($product);
+        $bill = Bill::where('id',$request->id)->where('admin_id', Auth::id())->first();
+        $bill->name = $bill->user?$bill->user->name:'';
+        $bill->phone = $bill->user?$bill->user->phone:'';
+        //dd($bill->user->kata->address);
+        $bill->address = $bill->user?$bill->user->kata->address:'';
+        $bill->bill_info = unserialize($bill->bill_info);
+        //dd($bill);
+        return response($bill);
     }
 
     /**

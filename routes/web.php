@@ -69,6 +69,7 @@ Route::group(['middleware' => ['auth']], function () {
     /*BillController Route*/
 
     Route::get('bills', [BillController::class, 'index']);
+    Route::get('bill/add', [BillController::class, 'addBill']);
     //Route::post('supplier-katas/mobile', [SupplierController::class, 'mobile']); /*ajax search*/
     Route::post('bill/create', [BillController::class, 'store']);
     Route::post('bill/search', [BillController::class, 'search']);

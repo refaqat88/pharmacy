@@ -2,3 +2,6 @@
 table.dataTable thead th {
     font-size: 12px;
 }
+.fl.form-group.col-sm-4{
+    float:left !important;
+}
