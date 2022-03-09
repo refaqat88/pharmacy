@@ -98,7 +98,7 @@
                 </a>
 
             </li>
-            <li class="{{Request::is('bills')  ? 'active' : '' }}">
+         {{--   <li class="{{Request::is('bills')  ? 'active' : '' }}">
 
                 <a href="{{url('bills')}}">
                     <i class="fa fa-user"></i>
@@ -117,6 +117,71 @@
                     </p>
                 </a>
 
+            </li>
+--}}
+            <li class="@if(Request::is('bills') || Request::is('bill/add')) active  @endif ">
+                <a data-toggle="collapse" href="#bills-page">
+                    <i class="fa fa-graduation-cap"></i>
+                    <p>
+                        Bills <b class="caret"></b>
+                    </p>
+                </a>
+                <div class="collapse @if(Request::is('bill/add') || Request::is('bills')) show  @endif  " id="bills-page">
+                    <ul class="nav">
+                        <li class="{{Request::is('bills')  ? 'active' : '' }}">
+
+                            <a href="{{url('bills')}}">
+                                <i class="fa fa-user"></i>
+                                <p>
+                                    Bills
+                                </p>
+                            </a>
+
+                        </li>
+                        <li class="{{ Request::is('bill/add') ? 'active' : '' || Request::is('bill/create') ? 'active' : ''  ? 'active' : '' || Request::is('bill/invoice') ? 'active' : '' }}">
+
+                            <a href="{{url('bill/add')}}">
+                                <i class="fa fa-user"></i>
+                                <p>
+                                    Add Bill
+                                </p>
+                            </a>
+
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="@if(Request::is('customer/bills') || Request::is('customer/bill/add')) active  @endif ">
+                <a data-toggle="collapse" href="#customer-bills-page">
+                    <i class="fa fa-graduation-cap"></i>
+                    <p>
+                        Customer Bills <b class="caret"></b>
+                    </p>
+                </a>
+                <div class="collapse @if(Request::is('customer/bill/add') || Request::is('customer/bills') ||  Request::is('customer/bill/create'))  show  @endif  " id="customer-bills-page">
+                    <ul class="nav">
+                        <li class="{{Request::is('customer/bills')  ? 'active' : '' }}">
+
+                            <a href="{{url('customer/bills')}}">
+                                <i class="fa fa-paperclip"></i>
+                                <p>
+                                    Customer Bills
+                                </p>
+                            </a>
+
+                        </li>
+                        <li class="{{ Request::is('customer/bill/add') ? 'active' : '' || Request::is('customer/bill/create') ? 'active' : '' }}">
+
+                            <a href="{{url('customer/bill/add')}}">
+                                <i class="fa fa-paperclip"></i>
+                                <p>
+                                    Add Customer Bill
+                                </p>
+                            </a>
+
+                        </li>
+                    </ul>
+                </div>
             </li>
            {{-- <li class="{{Request::is('permanent-katas') || Request::is('permanent-katas/create') ? 'active' : '' || Request::is('permanent-katas/show') ? 'active' : '' || Request::is('permanent-katas/invoice/{id}') ? 'active' : '' }}">
 

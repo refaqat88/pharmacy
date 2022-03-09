@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KataController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BillController;
+use App\Http\Controllers\CustomerBillController;
 use App\Http\Controllers\PermanentKataController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupplierController;
@@ -77,6 +78,22 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('bill/edit', [BillController::class, 'edit']);
     Route::post('bill/update', [BillController::class, 'update']);
     Route::get('bill/delete', [BillController::class, 'destroy']);
+
+
+    /*CustomerBillController Route*/
+
+    Route::get('customer/bills', [CustomerBillController::class, 'index']);
+    Route::get('customer/bill/add', [CustomerBillController::class, 'addBill']);
+    Route::post('customer/bill/mobile', [CustomerBillController::class, 'mobile']); /*ajax search*/
+    Route::post('customer/bill/create', [CustomerBillController::class, 'store']);
+    Route::post('customer/bill/search', [CustomerBillController::class, 'search']);
+    Route::get('customer/bill/show', [CustomerBillController::class, 'show']);
+    Route::get('customer/bill/edit', [CustomerBillController::class, 'edit']);
+    Route::post('customer/bill/update', [CustomerBillController::class, 'update']);
+    Route::get('customer/bill/delete', [CustomerBillController::class, 'destroy']);
+
+
+    /* SupplierController */
 
     Route::get('supplier-katas', [SupplierController::class, 'index']);
     Route::post('supplier-katas/create', [SupplierController::class, 'store']);

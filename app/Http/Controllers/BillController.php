@@ -237,7 +237,8 @@ class BillController extends Controller
         $bill->name = $bill->user?$bill->user->name:'';
         $bill->phone = $bill->user?$bill->user->phone:'';
         //dd($bill->user->kata->address);
-        $bill->address = $bill->user?$bill->user->kata->address:'';
+        $bill->address = $bill->user->kata? $bill->user->kata->address:'';
+                            //$bill->user->kata? $bill->user->kata->address:'';
         $bill->bill_info = unserialize($bill->bill_info);
         //dd($bill);
         return response($bill);
@@ -245,7 +246,7 @@ class BillController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
+     *  * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Kata  $kata
      * @return \Illuminate\Http\Response
      */
@@ -300,7 +301,7 @@ class BillController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Kata  $kata
      * @return \Illuminate\Http\Response
      */

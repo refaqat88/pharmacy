@@ -470,7 +470,7 @@ $(document).on('click','.delete-product-row', function () {
 
                 $("#show-user-name").text(result.name);
                 $("#show-user-phone").text(result.phone);
-                $("#show-address").text(result.address);
+                $("#show-user-address").text(result.address);
                 $("#show_total_price").text(result.total_price);
                 $('#show-Bill-datatable tbody').html('');
                 $.each(result.bill_info, function (key, value) {

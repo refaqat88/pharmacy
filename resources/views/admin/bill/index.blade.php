@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Bills')
+@section('title', ' Supplier Bills')
 @section('content')
     <style>
         .add-div-error{
@@ -200,7 +200,7 @@
                             </div>
                             <div class="fl form-group mobile col-sm-4">
                                 <label>Address</label>
-                                <P id="show-item-per-packet"></P>
+                                <P id="show-user-address"></P>
 
                             </div>
                         </div>

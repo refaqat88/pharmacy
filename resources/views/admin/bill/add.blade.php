@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Bills')
+@section('title', 'add Supplier Bills')
 @section('content')
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <style>
