@@ -63,7 +63,7 @@
                                         <tr>
                                             <th style="font-size:11px; width:5%" class="text-center">S.No</th>
                                             <th style="font-size:11px; width:15%" class="">Product Name</th>
-                                            <th style="font-size:11px; width:10%" class="">Quantity</th>
+                                            <th style="font-size:11px; width:10%" class="">Box Quantity</th>
                                             <th style="font-size:11px; width:15%" class="">Packet Per Box</th>
                                             <th style="font-size:11px; width:15%" class="">Item Per Packet</th>
                                             <th style="font-size:11px; width:15%" class="">Unit Price</th>

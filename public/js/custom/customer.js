@@ -47,7 +47,7 @@ $(document).ready(function () {
 </div>
                         </td>
                         <td class=""><input class="form-control item_quantity" name="item_quantity[]" required value="1" type="number" min="1"/></td>
-                        <td class=""><input class="form-control packet_per_box" name="packet_per_box[]" required type="number" min="1"/></td>
+                       <td class=""><input class="form-control packet_per_box" name="packet_per_box[]" required type="number" min="1"/></td>
                         <td class=""><input class="form-control item_per_packet" name="item_per_packet[]" required type="number" min="1" /></td>
                         <td class=""><input class="form-control item_unit_price" name="item_unit_price[]" required type="number" min="1" /></td>
                         <td class=""><input class="form-control item_price" name="item_price[]" required  type="number" min="1" /></td>
@@ -180,7 +180,22 @@ $(document).ready(function () {
     });
 
 
+    $(document).on('change keyup mouseup','.packet_per_box', function () {
+        var row = $(this).closest('tr').attr('id');
 
+        var array = row.split('_');
+
+        priceCalculate(array[1]);
+
+    });
+    $(document).on('change keyup mouseup','.item_per_packet', function () {
+        var row = $(this).closest('tr').attr('id');
+
+        var array = row.split('_');
+
+        priceCalculate(array[1]);
+
+    });
 
     $(document).on('change keyup mouseup','.item_unit_price', function () {
         var row = $(this).closest('tr').attr('id');
@@ -201,7 +216,9 @@ $(document).ready(function () {
     function priceCalculate(row){
         var item_quantity =  $('#bill-row_'+row).find('.item_quantity').val();
         var item_unit_price =  $('#bill-row_'+row).find('.item_unit_price').val();
-        var total = item_quantity * item_unit_price;
+        var packet_per_box =  $('#bill-row_'+row).find('.packet_per_box').val();
+        var item_per_packet =  $('#bill-row_'+row).find('.item_per_packet').val();
+        var total = item_quantity * packet_per_box * item_per_packet * item_unit_price;
         $('#bill-row_'+row).find('.item_price').val(total);
 
 
@@ -477,7 +494,7 @@ $(document).on('click','.delete-product-row', function () {
                     console.log("value>>>>>>>",value);
                     $('#show-Bill-datatable tbody').append(`<tr class="table-row">
                                         <td class="w-1">${value.s_no} </td>                                     
-                                        <td class="">${value.product} (${value.quantity} ✕ ${value.packet_per_box} ✕ ${value.item_per_packet})</td>
+                                        <td class="">${value.product} (${value.quantity} ✕ ${value.packet_per_box} ✕ ${value.item_per_packet} ✕ ${value.item_price_retail})</td>
                                    
                                         <td class="">${value.item_price_retail}</td>
                                         <td class="">${value.item_price}</td>
@@ -629,9 +646,9 @@ $(document).on('click','.delete-product-row', function () {
             });
     });
 
-    $(document).on('click', ".export", function() {
+    $(document).on('click', "#print", function() {
 
-        generatePDF('Invoice');
+        generatePDF('Printable');
 
 
     });

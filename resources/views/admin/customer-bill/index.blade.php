@@ -209,9 +209,9 @@
                                 <thead class="table-secondary">
                                 <tr>
                                     <th style="font-size:11px; width:5%" class="text-center">S.No</th>
-                                    <th style="font-size:11px; width:15%" class="">Product Name(Qty ✕ PPB ✕ IPP)</th>
-                                    <th style="font-size:11px; width:15%" class="">Unit Price</th>
-                                    <th style="font-size:11px; width:15%" class="">Price</th>
+                                    <th style="font-size:11px; width:40%" class="">Product Name(Qty ✕ PPB ✕ IPP ✕ Price)</th>
+                                    <th style="font-size:11px; width:25%" class="">Unit Price</th>
+                                    <th style="font-size:11px; width:30%" class="">Price</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -244,11 +244,11 @@
                             <table id="" class="table table-hovers" cellspacing="0" width="100%">
                                 <tfoot>
                                 <th style="font-size:11px; width:5%" class="text-center"></th>
-                                <th style="font-size:11px; width:30%" class=""></th>
-                                <th style="font-size:11px; width:25%" class=""></th>
-                                <th style="font-size:11px; width:25%; float:left" class="">Total Price</th>
+                                <th style="font-size:11px; width:40%" class=""></th>
+                                <th style="font-size:11px; width:15%" class=""></th>
+                                <th style="font-size:11px; width:30%; float:left" class="">Total Price</th>
 
-                                <th style="font-size:11px; width:15%; float:left" id="show_total_price">
+                                <th style="font-size:11px; width:10%; float:left" id="show_total_price">
 
                                 </th>
 
@@ -351,7 +351,7 @@
 @endsection
 
 @section('front_script')
-
+    <script src="{{asset('js/core/html2pdf.bundle.min.js')}}"></script>
     <script src="{{asset('js/core/jspdf.min.js')}}"></script>
     <script src="{{asset('js/core/jspdf-autotable.js')}}"></script>
     <script src="{{asset('js/demo.js')}}"></script>
@@ -359,7 +359,7 @@
     <script src="{{asset('js/plugins/bootstrap-datetimepicker.js')}}"></script>
     <script src="{{asset('js/custom/customer.js')}}"></script>
     <script src="{{asset('js/core/printlib.js')}}"></script>
-    <script>
+    {{--<script>
         $("#print").click(function () {
             $("#Printable").printThis({
                 debug: false, // show the iframe for debugging
@@ -384,6 +384,6 @@
                 afterPrint: null, // function called before iframe is removed
             });
         });
-    </script>
+    </script>--}}
 
 @endsection

@@ -133,7 +133,7 @@ class CustomerBillController extends Controller
                 $user = User::create($data);
             }
 
-            $i=0;
+            //$i=0;
           /*  foreach ($request->product_name as $key => $value) {
                         $product = (object)[];
 
